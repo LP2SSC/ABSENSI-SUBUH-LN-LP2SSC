@@ -212,6 +212,42 @@ function metaLastAlfaFillPath() {
 function studentsPath(batch) {
   return `${FB_ROOT}/batch_${batch}/students`;
 }
+function gendersPath(batch) {
+  return `${FB_ROOT}/batch_${batch}/genders`;
+}
+function trackGenderPath(batch) {
+  return `${FB_ROOT}/batch_${batch}/meta/track_gender`;
+}
+function loadGendersLocal(batch) {
+  try {
+    const raw = localStorage.getItem(STORAGE_PREFIX + "genders_" + batch);
+    if (raw) {
+      const obj = JSON.parse(raw);
+      if (obj && typeof obj === "object") return obj;
+    }
+  } catch {}
+  return {};
+}
+function saveGendersLocal(batch, map) {
+  try { localStorage.setItem(STORAGE_PREFIX + "genders_" + batch, JSON.stringify(map || {})); } catch {}
+}
+function loadTrackGenderLocal(batch) {
+  try {
+    const v = localStorage.getItem(STORAGE_PREFIX + "trackGender_" + batch);
+    if (v === "1" || v === "true") return true;
+    if (v === "0" || v === "false") return false;
+  } catch {}
+  return false;
+}
+function saveTrackGenderLocal(batch, on) {
+  try { localStorage.setItem(STORAGE_PREFIX + "trackGender_" + batch, on ? "1" : "0"); } catch {}
+}
+function normalizeGender(g) {
+  const u = String(g || "").toUpperCase().trim();
+  if (["L","M","COWOK","IKHWAN","PRIA","LAKI","LAKI-LAKI","LK"].includes(u)) return "L";
+  if (["P","F","CEWEK","AKHWAT","WANITA","PEREMPUAN","PR"].includes(u)) return "P";
+  return null;
+}
 
 function dateOffsetStr(d, offsetDays) {
   const x = new Date(d.getFullYear(), d.getMonth(), d.getDate() + offsetDays);
@@ -310,6 +346,11 @@ function Toast({ msg, visible }) {
 function AbsensiApp() {
   const [batch, setBatch] = useState("1");
   const [students, setStudents] = useState(() => loadStudentsLocal("1"));
+  const [genders, setGenders] = useState(() => loadGendersLocal("1"));
+  const [trackGender, setTrackGender] = useState(() => loadTrackGenderLocal("1"));
+  const [genderListModal, setGenderListModal] = useState(null);
+  const [genderListSearch, setGenderListSearch] = useState("");
+  const [newGender, setNewGender] = useState("");
   const [date, setDate] = useState(() => new Date());
   const [attendance, setAttendance] = useState({});
   const [izinReasons, setIzinReasons] = useState({});
@@ -723,7 +764,7 @@ useEffect(() => {
     }
   };
 
-  // Load students when batch changes
+  // Load students + genders + trackGender when batch changes
   useEffect(() => {
     studentsLoadedFor.current = null;
     setLoadingFb(true);
@@ -731,6 +772,9 @@ useEffect(() => {
     dirtyRef.current.clear();
     const local = loadStudentsLocal(batch);
     setStudents(local);
+    setGenders(loadGendersLocal(batch));
+    setTrackGender(loadTrackGenderLocal(batch));
+    setNewGender("");
 
     const ref = db.ref(studentsPath(batch));
     ref.once("value").then(snap => {
@@ -751,6 +795,27 @@ useEffect(() => {
       toast("⚠️ Offline — pakai data lokal");
       studentsLoadedFor.current = batch;
     });
+
+    db.ref(gendersPath(batch)).once("value").then(snap => {
+      const val = snap.val();
+      if (val && typeof val === "object") {
+        const cleaned = {};
+        Object.keys(val).forEach(k => {
+          const g = normalizeGender(val[k]);
+          if (g) cleaned[fromFbKey(k)] = g;
+        });
+        setGenders(cleaned);
+        saveGendersLocal(batch, cleaned);
+      }
+    }).catch(() => {});
+
+    db.ref(trackGenderPath(batch)).once("value").then(snap => {
+      const v = snap.val();
+      if (v === null || v === undefined) return;
+      const on = v === true || v === "true" || v === 1 || v === "1";
+      setTrackGender(on);
+      saveTrackGenderLocal(batch, on);
+    }).catch(() => {});
   }, [batch]);
 
   // Load attendance
@@ -810,6 +875,20 @@ useEffect(() => {
       console.warn("save students failed", err);
     });
   }, [students, batch]);
+
+  // Save genders
+  useEffect(() => {
+    if (studentsLoadedFor.current !== batch) return;
+    saveGendersLocal(batch, genders);
+    const payload = {};
+    Object.keys(genders || {}).forEach(name => {
+      const g = normalizeGender(genders[name]);
+      if (g) payload[toFbKey(name)] = g;
+    });
+    db.ref(gendersPath(batch)).set(payload).catch(err => {
+      console.warn("save genders failed", err);
+    });
+  }, [genders, batch]);
 
   // Load 7-day history
   useEffect(() => {
@@ -952,6 +1031,49 @@ el.style.boxShadow = "0 0 0 8px rgba(0,0,0,.18)";
     });
     return c;
   }, [attendance, list]);
+
+  // Hitung Ikhwan/Akhwat HADIR di batch ini saja (tidak digabung antar program)
+  const genderCounts = useMemo(() => {
+    const listL = [], listP = [], listU = [];
+    list.forEach(n => {
+      if (normalizeStatus(attendance[n]) !== "HADIR") return;
+      const g = normalizeGender(genders[n]);
+      if (g === "L") listL.push(n);
+      else if (g === "P") listP.push(n);
+      else listU.push(n);
+    });
+    listL.sort((a,b)=>a.localeCompare(b,"id"));
+    listP.sort((a,b)=>a.localeCompare(b,"id"));
+    listU.sort((a,b)=>a.localeCompare(b,"id"));
+    return {
+      L: listL.length, P: listP.length, U: listU.length,
+      total: listL.length + listP.length + listU.length,
+      listL, listP, listU
+    };
+  }, [attendance, list, genders]);
+
+  const setStudentGender = (name, g) => {
+    const next = normalizeGender(g);
+    setGenders(prev => {
+      const n = { ...prev };
+      if (!next) delete n[name];
+      else n[name] = next;
+      return n;
+    });
+  };
+
+  const toggleTrackGender = async () => {
+    const next = !trackGender;
+    setTrackGender(next);
+    saveTrackGenderLocal(batch, next);
+    try {
+      await db.ref(trackGenderPath(batch)).set(next);
+      toast(next ? "✅ Hitung Ikhwan/Akhwat aktif di " + batchLabel : "⏸️ Hitung gender dimatikan di " + batchLabel);
+    } catch (err) {
+      console.warn(err);
+      toast("⚠️ Gagal simpan pengaturan gender");
+    }
+  };
 
   const belum = list.length - (counts.HADIR + counts.SAKIT + counts.IZIN + counts.ALFA);
   const belumAbsenList = useMemo(
@@ -1353,12 +1475,21 @@ const belumAbsenFiltered = useMemo(() => {
     }
     next.sort((a, b) => a.localeCompare(b, "id"));
     setStudents(next);
+    const g = normalizeGender(newGender);
+    if (g && added.length) {
+      setGenders(prev => {
+        const n = { ...prev };
+        added.forEach(nm => { n[nm] = g; });
+        return n;
+      });
+    }
     setNewName("");
+    setNewGender("");
     setShowAddForm(false);
     if (skipped.length) {
       toast(`✅ ${added.length} ditambah • ${skipped.length} dilewati (duplikat)`);
     } else if (added.length === 1) {
-      toast(`✅ ${added[0]} ditambahkan`);
+      toast(`✅ ${added[0]} ditambahkan` + (g ? (g === "L" ? " (Ikhwan)" : " (Akhwat)") : ""));
     } else {
       toast(`✅ ${added.length} nama ditambahkan`);
     }
@@ -1378,6 +1509,11 @@ const belumAbsenFiltered = useMemo(() => {
       return n;
     });
     setIzinReasons(prev => {
+      const n = { ...prev };
+      delete n[name];
+      return n;
+    });
+    setGenders(prev => {
       const n = { ...prev };
       delete n[name];
       return n;
@@ -1459,6 +1595,21 @@ const doRename = async () => {
       });
       return out;
     });
+
+    // Pindah gender
+    setGenders(prev => {
+      if (prev[oldName] === undefined) return prev;
+      const n = { ...prev };
+      n[newName] = n[oldName];
+      delete n[oldName];
+      return n;
+    });
+    try {
+      const gUpdates = {};
+      gUpdates[toFbKey(newName)] = genders[oldName] || null;
+      gUpdates[toFbKey(oldName)] = null;
+      await db.ref(gendersPath(batch)).update(gUpdates);
+    } catch {}
 
     toast("✅ " + oldName + " → " + newName + " (" + moved + " data dipindah)");
     setRenameTarget(null);
@@ -1567,6 +1718,12 @@ const saveEditStudent = async () => {
   const resetToDefault = () => {
     const def = [...(BATCH_STUDENTS[batch] || [])];
     setStudents(def);
+    // keep gender hanya untuk nama yang masih ada di default
+    setGenders(prev => {
+      const next = {};
+      def.forEach(n => { if (prev[n]) next[n] = prev[n]; });
+      return next;
+    });
     toast("✅ Daftar dikembalikan ke default " + batchLabel);
   };
 
@@ -2311,6 +2468,45 @@ h("div", { style:{ maxWidth:960, margin:"0 auto", padding:"24px 16px 0" } }, [
         ]);
       })),
 
+      /* ===== BADGE IKHAN / AKHWAT (per batch, hanya kalau trackGender aktif) ===== */
+      trackGender && h("div", {
+        style: {
+          marginTop: 14, display: "flex", gap: 8, flexWrap: "wrap", alignItems: "center"
+        }
+      }, [
+        h("button", {
+          onClick: () => { setGenderListSearch(""); setGenderListModal("L"); },
+          style: {
+            padding: "8px 14px", borderRadius: 12, background: "#eff6ff",
+            border: "1px solid #bfdbfe", fontSize: 12, fontWeight: 700, color: "#1e40af", cursor: "pointer"
+          }
+        }, "👨 Ikhwan Hadir: " + genderCounts.L),
+        h("button", {
+          onClick: () => { setGenderListSearch(""); setGenderListModal("P"); },
+          style: {
+            padding: "8px 14px", borderRadius: 12, background: "#fdf2f8",
+            border: "1px solid #fbcfe8", fontSize: 12, fontWeight: 700, color: "#9d174d", cursor: "pointer"
+          }
+        }, "👩 Akhwat Hadir: " + genderCounts.P),
+        h("button", {
+          onClick: () => { setGenderListSearch(""); setGenderListModal("ALL"); },
+          style: {
+            padding: "8px 14px", borderRadius: 12, background: "#f0fdf4",
+            border: "1px solid #bbf7d0", fontSize: 12, fontWeight: 800, color: "#166534", cursor: "pointer"
+          }
+        }, "✅ Total Hadir: " + genderCounts.total),
+        genderCounts.U > 0 && h("button", {
+          onClick: () => { setGenderListSearch(""); setGenderListModal("U"); },
+          style: {
+            padding: "8px 14px", borderRadius: 12, background: "#f8fafc",
+            border: "1px solid #e2e8f0", fontSize: 12, fontWeight: 700, color: "#64748b", cursor: "pointer"
+          }
+        }, "❓ Belum ditandai: " + genderCounts.U),
+        h("div", {
+          style: { fontSize: 11, fontWeight: 600, color: "#94a3b8", width: "100%" }
+        }, "Hanya batch ini · ketuk untuk lihat nama")
+      ]),
+
       h("div", { style:{ marginTop:20, display:"flex", gap:10, flexWrap:"wrap", alignItems:"center" } }, [
   h("button", {
     onClick: () => {
@@ -2434,13 +2630,23 @@ h("div", { style:{ maxWidth:960, margin:"0 auto", padding:"24px 16px 0" } }, [
           padding: 20, animation: "fadeIn .25s ease"
         }
       }, [
-        h("div", { style: { display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 14 } }, [
+        h("div", { style: { display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 14, flexWrap: "wrap", gap: 10 } }, [
           h("div", null, [
             h("div", { style: { fontSize: 14, fontWeight: 800 } }, "Kelola Anggota — " + batchLabel),
             h("div", { style: { fontSize: 12, color: "rgba(0,0,0,.4)", fontWeight: 500 } },
               `Total ${students.length} orang • Sinkron Firebase • Urut A–Z`)
           ]),
-          h("div", { style: { display: "flex", gap: 8 } }, [
+          h("div", { style: { display: "flex", gap: 8, flexWrap: "wrap" } }, [
+            h("button", {
+              onClick: toggleTrackGender,
+              title: "Aktifkan/nonaktifkan hitung Ikhwan-Akhwat di batch ini saja",
+              style: {
+                height: 36, padding: "0 12px", borderRadius: 10, border: "none",
+                background: trackGender ? "#1e40af" : "#e2e8f0",
+                color: trackGender ? "#fff" : "#64748b",
+                fontWeight: 800, fontSize: 12, cursor: "pointer"
+              }
+            }, trackGender ? "♂♀ Gender: ON" : "♂♀ Gender: OFF"),
             h("button", {
               onClick: () => {
                 setShowAddForm(v => !v);
@@ -2489,6 +2695,29 @@ h("div", { style:{ maxWidth:960, margin:"0 auto", padding:"24px 16px 0" } }, [
               }
             }, "Tambah")
           ]),
+          trackGender && h("div", {
+            style: { display: "flex", gap: 6, marginTop: 8, alignItems: "center", flexWrap: "wrap" }
+          }, [
+            h("span", { style: { fontSize: 11, fontWeight: 700, color: "#64748b" } }, "Gender default:"),
+            h("button", {
+              onClick: () => setNewGender(newGender === "L" ? "" : "L"),
+              style: {
+                height: 30, padding: "0 12px", borderRadius: 8, fontSize: 12, fontWeight: 800, cursor: "pointer",
+                border: newGender === "L" ? "none" : "1px solid #bfdbfe",
+                background: newGender === "L" ? "#1e40af" : "#eff6ff",
+                color: newGender === "L" ? "#fff" : "#1e40af"
+              }
+            }, "👨 Ikhwan"),
+            h("button", {
+              onClick: () => setNewGender(newGender === "P" ? "" : "P"),
+              style: {
+                height: 30, padding: "0 12px", borderRadius: 8, fontSize: 12, fontWeight: 800, cursor: "pointer",
+                border: newGender === "P" ? "none" : "1px solid #fbcfe8",
+                background: newGender === "P" ? "#9d174d" : "#fdf2f8",
+                color: newGender === "P" ? "#fff" : "#9d174d"
+              }
+            }, "👩 Akhwat")
+          ]),
           h("div", {
             style: { fontSize: 11, color: "#64748b", marginTop: 6, paddingLeft: 4, fontWeight: 600 }
           }, "💡 Bisa input beberapa nama sekaligus, pisahkan dengan koma. Otomatis jadi KAPITAL.")
@@ -2508,14 +2737,44 @@ h("div", { style:{ maxWidth:960, margin:"0 auto", padding:"24px 16px 0" } }, [
               border: "1px solid rgba(0,0,0,.04)"
             }
           }, [
-            h("span", {
-              style: {
-                width: 26, height: 26, borderRadius: 999, flexShrink: 0,
-                display: "flex", alignItems: "center", justifyContent: "center",
-                fontSize: 11, fontWeight: 800, background: "#e2e8f0", color: "#475569"
-              }
-            }, i + 1),
-            h("span", { style: { flex: 1, fontWeight: 700, fontSize: 14, color: "#1e293b", textTransform:"uppercase" } }, name),
+            (() => {
+              const g = normalizeGender(genders[name]);
+              const isL = trackGender && g === "L";
+              const isP = trackGender && g === "P";
+              let bg = "#e2e8f0", color = "#475569", border = "1px solid transparent";
+              if (isL) { bg = "#dbeafe"; color = "#2563eb"; border = "1px solid #93c5fd"; }
+              else if (isP) { bg = "#fce7f3"; color = "#db2777"; border = "1px solid #f9a8d4"; }
+              return h("span", {
+                style: {
+                  width: 26, height: 26, borderRadius: 999, flexShrink: 0,
+                  display: "flex", alignItems: "center", justifyContent: "center",
+                  fontSize: 11, fontWeight: 800, background: bg, color, border
+                }
+              }, i + 1);
+            })(),
+            h("span", { style: { flex: 1, fontWeight: 700, fontSize: 14, color: "#1e293b", textTransform:"uppercase", minWidth: 0, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" } }, name),
+            trackGender && h("div", { style: { display: "flex", gap: 4, flexShrink: 0 } }, [
+              h("button", {
+                onClick: () => setStudentGender(name, normalizeGender(genders[name]) === "L" ? "" : "L"),
+                title: "Tandai Ikhwan",
+                style: {
+                  height: 28, padding: "0 8px", borderRadius: 8, fontSize: 11, fontWeight: 800, cursor: "pointer",
+                  border: normalizeGender(genders[name]) === "L" ? "none" : "1px solid #bfdbfe",
+                  background: normalizeGender(genders[name]) === "L" ? "#1e40af" : "#eff6ff",
+                  color: normalizeGender(genders[name]) === "L" ? "#fff" : "#1e40af"
+                }
+              }, "♂"),
+              h("button", {
+                onClick: () => setStudentGender(name, normalizeGender(genders[name]) === "P" ? "" : "P"),
+                title: "Tandai Akhwat",
+                style: {
+                  height: 28, padding: "0 8px", borderRadius: 8, fontSize: 11, fontWeight: 800, cursor: "pointer",
+                  border: normalizeGender(genders[name]) === "P" ? "none" : "1px solid #fbcfe8",
+                  background: normalizeGender(genders[name]) === "P" ? "#9d174d" : "#fdf2f8",
+                  color: normalizeGender(genders[name]) === "P" ? "#fff" : "#9d174d"
+                }
+              }, "♀")
+            ]),
 h("button", {
   onClick: () => openRename(name),
   title: "Ganti nama (riwayat tetap aman)",
@@ -2556,21 +2815,34 @@ h("button", {
           }
         }, [
           h("div", { style:{ display:"flex", gap:12, alignItems:"flex-start" } }, [
-            h("div", {
-              style: {
-                width:32, height:32, borderRadius:999, flexShrink:0,
-                display:"flex", alignItems:"center", justifyContent:"center",
-                fontSize:11, fontWeight:800,
-                background: meta ? "#fff" : "#f4f4f5",
-                color: meta ? meta.border : "rgba(0,0,0,.4)",
-                border: `1px solid ${meta ? meta.border : "rgba(0,0,0,.06)"}`
-              }
-            }, idx + 1),
+            (() => {
+              const g = normalizeGender(genders[name]);
+              const isL = trackGender && g === "L";
+              const isP = trackGender && g === "P";
+              let bg = meta ? "#fff" : "#f4f4f5";
+              let color = meta ? meta.border : "rgba(0,0,0,.4)";
+              let border = `1px solid ${meta ? meta.border : "rgba(0,0,0,.06)"}`;
+              if (isL) { bg = "#dbeafe"; color = "#2563eb"; border = "1px solid #93c5fd"; }
+              else if (isP) { bg = "#fce7f3"; color = "#db2777"; border = "1px solid #f9a8d4"; }
+              return h("div", {
+                style: {
+                  width:32, height:32, borderRadius:999, flexShrink:0,
+                  display:"flex", alignItems:"center", justifyContent:"center",
+                  fontSize:11, fontWeight:800, background: bg, color, border
+                }
+              }, idx + 1);
+            })(),
             h("div", { style:{ minWidth:0, flex:1 } }, [
               h("div", { style:{ display:"flex", alignItems:"center", gap:8, flexWrap:"wrap" } }, [
                 h("span", {
   style: { fontWeight:800, fontSize:15, color: meta ? meta.text : "#111", letterSpacing:"-0.025em", textTransform:"uppercase" }
 }, name),
+                  trackGender && normalizeGender(genders[name]) === "L" && h("span", {
+                    style: { fontSize:10, fontWeight:800, padding:"2px 6px", borderRadius:999, background:"#dbeafe", color:"#1e40af" }
+                  }, "♂"),
+                  trackGender && normalizeGender(genders[name]) === "P" && h("span", {
+                    style: { fontSize:10, fontWeight:800, padding:"2px 6px", borderRadius:999, background:"#fce7f3", color:"#9d174d" }
+                  }, "♀"),
                   (st && meta)
     ? h("span", {
         style: {
@@ -4130,6 +4402,114 @@ statusListModal && h("div", { style: { position:"fixed", inset:0, zIndex:195, di
           searchedList.length !== filteredList.length
             ? `${searchedList.length} dari ${filteredList.length} siswa (difilter)`
             : `${filteredList.length} siswa berstatus ${statusListModal}`)
+      ]);
+    })()
+  ])
+]),
+
+/* ===== MODAL DAFTAR GENDER ===== */
+genderListModal && h("div", {
+  style: { position:"fixed", inset:0, zIndex:195, display:"flex", alignItems:"center", justifyContent:"center", padding:16 }
+}, [
+  h("div", { onClick: () => setGenderListModal(null), style: { position:"absolute", inset:0, background:"rgba(0,0,0,.5)", backdropFilter:"blur(6px)" } }),
+  h("div", {
+    style: {
+      position:"relative", width:"100%", maxWidth:460, maxHeight:"88vh", borderRadius:24,
+      background:"#fff", padding:24, boxShadow:"0 20px 60px -12px rgba(0,0,0,.4)",
+      animation:"scaleIn .25s ease", display:"flex", flexDirection:"column"
+    }
+  }, [
+    h("button", {
+      onClick: () => setGenderListModal(null),
+      style: {
+        position:"absolute", right:12, top:12, width:32, height:32, borderRadius:999,
+        background:"#f4f4f5", border:"none", color:"#71717a", cursor:"pointer",
+        display:"flex", alignItems:"center", justifyContent:"center", fontSize:14
+      }
+    }, "✕"),
+    h("div", { style:{ fontSize:16, fontWeight:800, marginBottom:4, paddingRight:30 } },
+      genderListModal === "L" ? "👨 Daftar Ikhwan Hadir"
+      : genderListModal === "P" ? "👩 Daftar Akhwat Hadir"
+      : genderListModal === "U" ? "❓ Belum ditandai gender"
+      : "✅ Semua yang Hadir"),
+    h("div", { style:{ fontSize:12, color:"#64748b", marginBottom:14, fontWeight:600 } },
+      batchLabel + " · " + formatDateAbsensi(date) + " · hanya batch ini"),
+    (() => {
+      const src =
+        genderListModal === "L" ? genderCounts.listL
+        : genderListModal === "P" ? genderCounts.listP
+        : genderListModal === "U" ? genderCounts.listU
+        : [...genderCounts.listL, ...genderCounts.listP, ...genderCounts.listU].sort((a,b)=>a.localeCompare(b,"id"));
+      const q = genderListSearch.trim().toLowerCase();
+      const filtered = q ? src.filter(n => n.toLowerCase().includes(q)) : src;
+      if (!src.length) {
+        return h("div", {
+          style: { padding:36, textAlign:"center", background:"#f8fafc", border:"1px dashed #cbd5e1", borderRadius:14 }
+        }, [
+          h("div", { style:{ fontSize:40, marginBottom:6 } }, "📭"),
+          h("div", { style:{ fontSize:14, fontWeight:800, color:"#64748b" } }, "Belum ada data"),
+          h("div", { style:{ fontSize:12, color:"#94a3b8", marginTop:4, fontWeight:600 } }, "0 orang")
+        ]);
+      }
+      return h("div", null, [
+        h("input", {
+          type: "text", value: genderListSearch,
+          onChange: e => setGenderListSearch(e.target.value),
+          placeholder: "Cari nama...",
+          style: {
+            width: "100%", height: 38, padding: "0 12px", borderRadius: 10,
+            border: "1px solid #cbd5e1", fontSize: 13, fontWeight: 600, outline: "none", marginBottom: 10
+          }
+        }),
+        h("div", {
+          style: { maxHeight: "48vh", overflowY: "auto", border: "1px solid #e2e8f0", borderRadius: 12 }
+        }, filtered.length === 0
+          ? h("div", { style:{ padding:20, textAlign:"center", color:"#94a3b8", fontSize:12, fontWeight:600 } },
+              ["Tidak ada: ", h("strong", null, `"${genderListSearch}"`)])
+          : filtered.map((name, i) => {
+              const g = normalizeGender(genders[name]);
+              return h("div", {
+                key: name,
+                style: {
+                  display:"flex", alignItems:"center", gap:10, padding:"10px 14px",
+                  borderBottom: i < filtered.length - 1 ? "1px solid #f1f5f9" : "none"
+                }
+              }, [
+                h("span", {
+                  style: {
+                    width:26, height:26, borderRadius:999, flexShrink:0,
+                    display:"flex", alignItems:"center", justifyContent:"center",
+                    fontSize:11, fontWeight:800,
+                    background: g === "L" ? "#eff6ff" : g === "P" ? "#fdf2f8" : "#f1f5f9",
+                    color: g === "L" ? "#1e40af" : g === "P" ? "#9d174d" : "#64748b"
+                  }
+                }, i + 1),
+                h("span", {
+                  style: {
+                    flex:1, fontWeight:700, fontSize:13, color:"#1e293b",
+                    textTransform:"uppercase", minWidth:0, overflow:"hidden",
+                    textOverflow:"ellipsis", whiteSpace:"nowrap"
+                  }
+                }, name),
+                h("span", {
+                  style: {
+                    fontSize:11, fontWeight:800, padding:"3px 8px", borderRadius:999, flexShrink:0,
+                    background: g === "L" ? "#eff6ff" : g === "P" ? "#fdf2f8" : "#f1f5f9",
+                    color: g === "L" ? "#1e40af" : g === "P" ? "#9d174d" : "#64748b",
+                    border: "1px solid " + (g === "L" ? "#bfdbfe" : g === "P" ? "#fbcfe8" : "#e2e8f0")
+                  }
+                }, g === "L" ? "♂ Ikhwan" : g === "P" ? "♀ Akhwat" : "—")
+              ]);
+            })
+        ),
+        h("div", {
+          style: {
+            fontSize:12, fontWeight:800, marginTop:12, textAlign:"center", padding:"8px",
+            borderRadius:10, background: "#f8fafc", color: "#475569"
+          }
+        }, filtered.length !== src.length
+          ? `${filtered.length} dari ${src.length} orang (difilter)`
+          : `${src.length} orang`)
       ]);
     })()
   ])
