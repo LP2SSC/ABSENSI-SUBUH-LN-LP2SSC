@@ -4531,14 +4531,14 @@ h("div", { style:{ maxWidth:960, margin:"0 auto", padding:"24px 16px 0" } }, [
             padding: "8px 14px", borderRadius: 12, background: "#eff6ff",
             border: "1px solid #bfdbfe", fontSize: 12, fontWeight: 700, color: "#1e40af", cursor: "pointer"
           }
-        }, "👨 Ikhwan Hadir: " + genderCounts.L),
+        }, "👳🏻 Ikhwan Hadir: " + genderCounts.L),
         h("button", {
           onClick: () => { setGenderListSearch(""); setGenderListModal("P"); },
           style: {
             padding: "8px 14px", borderRadius: 12, background: "#fdf2f8",
             border: "1px solid #fbcfe8", fontSize: 12, fontWeight: 700, color: "#9d174d", cursor: "pointer"
           }
-        }, "👩 Akhwat Hadir: " + genderCounts.P),
+        }, "🧕🏻 Akhwat Hadir: " + genderCounts.P),
         h("button", {
           onClick: () => { setGenderListSearch(""); setGenderListModal("ALL"); },
           style: {
@@ -4758,7 +4758,7 @@ h("div", { style:{ maxWidth:960, margin:"0 auto", padding:"24px 16px 0" } }, [
                 background: newGender === "L" ? "#1e40af" : "#eff6ff",
                 color: newGender === "L" ? "#fff" : "#1e40af"
               }
-            }, "👨 Ikhwan"),
+            }, "👳🏻 Ikhwan"),
             h("button", {
               onClick: () => setNewGender(newGender === "P" ? "" : "P"),
               style: {
@@ -4767,7 +4767,7 @@ h("div", { style:{ maxWidth:960, margin:"0 auto", padding:"24px 16px 0" } }, [
                 background: newGender === "P" ? "#9d174d" : "#fdf2f8",
                 color: newGender === "P" ? "#fff" : "#9d174d"
               }
-            }, "👩 Akhwat")
+            }, "🧕🏻 Akhwat")
           ]),
           h("div", {
             style: { fontSize: 11, color: "#64748b", marginTop: 6, paddingLeft: 4, fontWeight: 600 }
@@ -6479,8 +6479,8 @@ genderListModal && h("div", {
       }
     }, "✕"),
     h("div", { style:{ fontSize:16, fontWeight:800, marginBottom:4, paddingRight:30 } },
-      genderListModal === "L" ? "👨 Daftar Ikhwan Hadir"
-      : genderListModal === "P" ? "👩 Daftar Akhwat Hadir"
+      genderListModal === "L" ? "👳🏻 Daftar Ikhwan Hadir"
+      : genderListModal === "P" ? "🧕🏻 Daftar Akhwat Hadir"
       : genderListModal === "U" ? "❓ Belum ditandai gender"
       : "✅ Semua yang Hadir"),
     h("div", { style:{ fontSize:12, color:"#64748b", marginBottom:14, fontWeight:600 } },
