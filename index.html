@@ -21,9 +21,2060 @@
     .history-dots{display:flex;align-items:center;gap:0;margin-top:6px;flex-wrap:wrap}
     .history-dots-label{font-size:9px;font-weight:700;letter-spacing:.06em;color:rgba(0,0,0,.3);margin-right:6px}
   </style>
+
+<style id="skin-engine-css">
+/* ============================================================
+   SKIN ENGINE — LAPISAN TEMA TAMPILAN
+   Dipilih admin, otomatis diikuti tampilan siswa.
+   Tema "default" = tampilan asli (tanpa perubahan apa pun).
+   ============================================================ */
+
+/* ---------- panel admin (dipakai semua tema) ---------- */
+html {
+  --sk-panel-bg: #ffffff;
+  --sk-panel-fg: #0f172a;
+  --sk-panel-border: rgba(15, 23, 42, .10);
+  --sk-panel-soft: #f1f5f9;
+  --sk-panel-accent: #6366f1;
+  --sk-panel-shadow: 0 26px 60px -20px rgba(15, 23, 42, .45);
+}
+
+.sk-admin-fab {
+  position: fixed;
+  right: 16px;
+  bottom: 16px;
+  z-index: 330;
+  width: 52px;
+  height: 52px;
+  border: none;
+  border-radius: 50%;
+  cursor: pointer;
+  color: #fff;
+  font-size: 22px;
+  line-height: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(135deg, #6366f1, #8b5cf6);
+  box-shadow: 0 14px 30px -10px rgba(99, 102, 241, .75), inset 0 1px 0 rgba(255, 255, 255, .35);
+  transition: transform .18s ease, box-shadow .18s ease;
+}
+.sk-admin-fab:hover { transform: translateY(-3px) scale(1.03); }
+.sk-admin-fab:active { transform: translateY(0) scale(.97); }
+
+.sk-admin-panel {
+  position: fixed;
+  right: 16px;
+  bottom: 80px;
+  z-index: 331;
+  width: min(372px, calc(100vw - 32px));
+  max-height: min(78vh, 640px);
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+  padding: 16px;
+  border-radius: 22px;
+  background: var(--sk-panel-bg);
+  color: var(--sk-panel-fg);
+  border: 1px solid var(--sk-panel-border);
+  box-shadow: var(--sk-panel-shadow);
+  font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  animation: skPanelIn .22s cubic-bezier(.2, .8, .2, 1);
+}
+@keyframes skPanelIn {
+  from { opacity: 0; transform: translateY(10px) scale(.98); }
+  to { opacity: 1; transform: none; }
+}
+
+.sk-admin-head { display: flex; align-items: flex-start; justify-content: space-between; gap: 10px; margin-bottom: 12px; }
+.sk-admin-title { font-size: 15px; font-weight: 900; letter-spacing: -.01em; }
+.sk-admin-sub { font-size: 11px; font-weight: 600; opacity: .6; margin-top: 3px; line-height: 1.4; }
+.sk-admin-x {
+  flex: 0 0 auto; width: 28px; height: 28px; border-radius: 999px; border: 1px solid var(--sk-panel-border);
+  background: var(--sk-panel-soft); color: inherit; cursor: pointer; font-size: 13px; display: flex; align-items: center; justify-content: center;
+}
+
+.sk-admin-search {
+  width: 100%;
+  height: 34px;
+  margin-bottom: 10px;
+  padding: 0 12px;
+  border-radius: 10px;
+  border: 1px solid var(--sk-panel-border);
+  background: var(--sk-panel-soft);
+  color: inherit;
+  font: inherit;
+  font-size: 11.5px;
+  font-weight: 700;
+}
+.sk-admin-search::placeholder { color: inherit; opacity: .45; }
+.sk-admin-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+.sk-th {
+  position: relative; display: flex; align-items: center; gap: 8px; text-align: left;
+  padding: 8px; border-radius: 14px; border: 1px solid var(--sk-panel-border);
+  background: var(--sk-panel-soft); color: inherit; font: inherit; cursor: pointer;
+  transition: transform .15s ease, border-color .15s ease;
+}
+.sk-th:hover { transform: translateY(-1px); border-color: var(--sk-panel-accent); }
+.sk-th.active { border-color: var(--sk-panel-accent); box-shadow: 0 0 0 2px var(--sk-panel-accent) inset; }
+.sk-th-swatch { flex: 0 0 auto; width: 30px; height: 30px; border-radius: 9px; box-shadow: inset 0 0 0 1px rgba(0, 0, 0, .12); }
+.sk-th-meta { min-width: 0; display: flex; flex-direction: column; gap: 1px; }
+.sk-th-name { font-size: 11.5px; font-weight: 800; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.sk-th-desc { font-size: 9.5px; font-weight: 600; opacity: .55; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.sk-th-check {
+  position: absolute; top: -5px; right: -5px; width: 18px; height: 18px; border-radius: 999px;
+  background: var(--sk-panel-accent); color: #fff; font-size: 10px; font-weight: 900;
+  display: flex; align-items: center; justify-content: center;
+}
+
+.sk-admin-sec { margin-top: 14px; }
+.sk-admin-label { font-size: 10px; font-weight: 900; letter-spacing: .12em; opacity: .5; margin-bottom: 6px; }
+.sk-admin-modes { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; padding: 4px; border-radius: 12px; background: var(--sk-panel-soft); }
+.sk-mode {
+  height: 34px; border-radius: 9px; border: none; cursor: pointer; font: inherit;
+  font-size: 11.5px; font-weight: 800; color: inherit; background: transparent; opacity: .65;
+}
+.sk-mode.active { background: var(--sk-panel-accent); color: #fff; opacity: 1; }
+.sk-admin-note {
+  margin-top: 10px; padding: 9px 11px; border-radius: 12px; background: var(--sk-panel-soft);
+  font-size: 10.5px; font-weight: 600; line-height: 1.5; opacity: .85;
+}
+.sk-admin-note b { font-weight: 900; }
+
+/* ============================================================
+   1. DEFAULT — tampilan asli, tidak ada override
+   ============================================================ */
+
+/* ============================================================
+   2. CLAYMORPHISM — empuk, pastel, seperti tanah liat
+   ============================================================ */
+html[data-skin="clay"] body { background: #e6ebf4 !important; }
+html[data-skin="clay"] .sk-page {
+  background: radial-gradient(130% 100% at 50% 0%, #f8fafd 0%, #e8edf6 45%, #dbe3f0 100%) !important;
+  font-family: ui-rounded, "Nunito", "SF Pro Rounded", system-ui, -apple-system, sans-serif !important;
+}
+html[data-skin="clay"] .sk-panel {
+  background: linear-gradient(160deg, #fbfcff, #eef2f9) !important;
+  border: 1px solid rgba(255, 255, 255, .9) !important;
+  box-shadow: 0 24px 48px -20px rgba(86, 110, 150, .55), 0 10px 22px -12px rgba(86, 110, 150, .35),
+              inset 0 2px 0 rgba(255, 255, 255, .95), inset 0 -8px 16px rgba(148, 163, 190, .18) !important;
+}
+html[data-skin="clay"] .sk-surface {
+  background: linear-gradient(160deg, #fdfeff, #f1f4fa) !important;
+  border: 1px solid rgba(255, 255, 255, .85) !important;
+  box-shadow: 0 14px 26px -16px rgba(86, 110, 150, .55), inset 0 1px 0 #fff,
+              inset 0 -5px 12px rgba(148, 163, 190, .16) !important;
+}
+html[data-skin="clay"] .sk-chip {
+  border: 1px solid rgba(255, 255, 255, .8) !important;
+  box-shadow: 0 6px 12px -8px rgba(86, 110, 150, .65), inset 0 1px 0 rgba(255, 255, 255, .9) !important;
+}
+html[data-skin="clay"] .sk-tint { box-shadow: inset 0 2px 6px rgba(148, 163, 190, .28) !important; }
+html[data-skin="clay"] .sk-field {
+  background: #eef2f9 !important;
+  border: 2px solid rgba(255, 255, 255, .9) !important;
+  box-shadow: inset 4px 4px 10px rgba(163, 177, 198, .45), inset -4px -4px 10px rgba(255, 255, 255, .95) !important;
+}
+html[data-skin="clay"] .sk-btn {
+  box-shadow: 0 7px 0 -3px rgba(255, 255, 255, .75), 0 12px 22px -12px rgba(86, 110, 150, .8),
+              inset 0 -3px 6px rgba(0, 0, 0, .07) !important;
+}
+html[data-skin="clay"] .sk-btn:active { transform: translateY(3px); box-shadow: inset 0 -2px 6px rgba(0, 0, 0, .12) !important; }
+html[data-skin="clay"] .sk-overlay { background: rgba(43, 50, 69, .35) !important; backdrop-filter: blur(6px); }
+
+/* ============================================================
+   3. GLASSMORPHISM — bening, blur, gradien lembut
+   ============================================================ */
+html[data-skin="glass"] body { background: #eef2ff !important; }
+html[data-skin="glass"] .sk-page {
+  background:
+    radial-gradient(45% 35% at 12% 8%, rgba(167, 139, 250, .55), transparent 70%),
+    radial-gradient(40% 35% at 90% 12%, rgba(103, 232, 249, .55), transparent 70%),
+    radial-gradient(45% 40% at 75% 95%, rgba(251, 207, 232, .6), transparent 72%),
+    radial-gradient(40% 35% at 20% 90%, rgba(191, 219, 254, .6), transparent 70%),
+    #eef2ff !important;
+  background-attachment: fixed !important;
+}
+html[data-skin="glass"] .sk-panel {
+  background: linear-gradient(160deg, rgba(255, 255, 255, .74), rgba(255, 255, 255, .44)) !important;
+  backdrop-filter: blur(20px) saturate(180%);
+  -webkit-backdrop-filter: blur(20px) saturate(180%);
+  border: 1px solid rgba(255, 255, 255, .78) !important;
+  box-shadow: 0 24px 60px -24px rgba(30, 41, 59, .45), inset 0 1px 0 rgba(255, 255, 255, .9) !important;
+}
+html[data-skin="glass"] .sk-surface {
+  background: rgba(255, 255, 255, .62) !important;
+  border: 1px solid rgba(255, 255, 255, .7) !important;
+  box-shadow: 0 10px 26px -18px rgba(30, 41, 59, .5), inset 0 1px 0 rgba(255, 255, 255, .85) !important;
+}
+html[data-skin="glass"] .sk-chip {
+  border: 1px solid rgba(255, 255, 255, .72) !important;
+  box-shadow: 0 4px 10px -6px rgba(30, 41, 59, .5) !important;
+}
+html[data-skin="glass"] .sk-tint { box-shadow: inset 0 1px 0 rgba(255, 255, 255, .55) !important; }
+html[data-skin="glass"] .sk-field {
+  background: rgba(255, 255, 255, .68) !important;
+  border: 1px solid rgba(255, 255, 255, .9) !important;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, .9), 0 6px 16px -12px rgba(30, 41, 59, .6) !important;
+}
+html[data-skin="glass"] .sk-btn {
+  box-shadow: 0 10px 24px -14px rgba(30, 41, 59, .75), inset 0 1px 0 rgba(255, 255, 255, .55) !important;
+}
+html[data-skin="glass"] .sk-overlay { background: rgba(15, 23, 42, .35) !important; backdrop-filter: blur(4px); }
+html[data-skin="glass"] .sk-banner { background: rgba(255, 255, 255, .62) !important; border: 1px solid rgba(255, 255, 255, .8) !important; }
+
+/* ============================================================
+   4. NEONMORPHISM — gelap, garis neon, glow
+   ============================================================ */
+html[data-skin="neon"] {
+  color-scheme: dark;
+  --sk-panel-bg: #0b1020;
+  --sk-panel-fg: #e7f2ff;
+  --sk-panel-border: rgba(56, 189, 248, .3);
+  --sk-panel-soft: rgba(148, 233, 255, .07);
+  --sk-panel-accent: #22d3ee;
+}
+html[data-skin="neon"] body { background: #05070f !important; }
+html[data-skin="neon"] .sk-page {
+  background:
+    radial-gradient(60% 40% at 10% 0%, rgba(34, 211, 238, .16), transparent 65%),
+    radial-gradient(55% 45% at 95% 5%, rgba(168, 85, 247, .2), transparent 65%),
+    radial-gradient(60% 50% at 50% 105%, rgba(59, 130, 246, .14), transparent 65%),
+    #05070f !important;
+  background-attachment: fixed !important;
+}
+html[data-skin="neon"] .sk-panel {
+  background: linear-gradient(160deg, rgba(16, 22, 40, .95), rgba(8, 11, 22, .97)) !important;
+  border: 1px solid rgba(56, 189, 248, .28) !important;
+  box-shadow: 0 26px 60px -26px rgba(34, 211, 238, .65), inset 0 1px 0 rgba(148, 233, 255, .08) !important;
+  color: #e7f2ff !important;
+}
+html[data-skin="neon"] .sk-surface {
+  background: linear-gradient(160deg, rgba(18, 24, 44, .92), rgba(9, 12, 24, .94)) !important;
+  border: 1px solid rgba(99, 102, 241, .25) !important;
+  box-shadow: 0 0 18px -6px rgba(56, 189, 248, .4), inset 0 1px 0 rgba(148, 233, 255, .06) !important;
+  color: #e7f2ff !important;
+}
+html[data-skin="neon"] .sk-chip {
+  border: 1px solid rgba(255, 255, 255, .16) !important;
+  box-shadow: 0 0 12px -3px rgba(56, 189, 248, .5) !important;
+}
+html[data-skin="neon"] .sk-tint {
+  background: linear-gradient(120deg, rgba(34, 211, 238, .14), rgba(168, 85, 247, .14)) !important;
+  border: 1px solid rgba(56, 189, 248, .16) !important;
+}
+html[data-skin="neon"] .sk-field {
+  background: rgba(6, 10, 20, .92) !important;
+  border: 1px solid rgba(56, 189, 248, .35) !important;
+  color: #e7f2ff !important;
+  box-shadow: inset 0 0 14px rgba(34, 211, 238, .12) !important;
+}
+html[data-skin="neon"] .sk-field::placeholder { color: rgba(190, 214, 255, .45) !important; }
+html[data-skin="neon"] .sk-btn {
+  box-shadow: 0 0 20px -6px rgba(56, 189, 248, .75), inset 0 1px 0 rgba(255, 255, 255, .12) !important;
+}
+html[data-skin="neon"] .sk-btn-dark { background: linear-gradient(135deg, #22d3ee, #a855f7) !important; color: #04101f !important; }
+html[data-skin="neon"] .sk-txt { color: #e7f2ff !important; }
+/* teks di dalam elemen yang tetap terang (tombol putih, chip, badge) jangan dipaksa terang */
+html[data-skin="neon"] .sk-btn .sk-txt,
+html[data-skin="neon"] .sk-btn .sk-txt-muted,
+html[data-skin="neon"] .sk-chip .sk-txt,
+html[data-skin="neon"] .sk-chip .sk-txt-muted,
+html[data-skin="neon"] .sk-accent .sk-txt,
+html[data-skin="neon"] .sk-accent .sk-txt-muted,
+html[data-skin="neon"] .sk-banner .sk-txt,
+html[data-skin="neon"] .sk-banner .sk-txt-muted,
+html[data-skin="neon"] .sk-field .sk-txt { color: inherit !important; }
+html[data-skin="neon"] .sk-txt-muted { color: rgba(190, 214, 255, .62) !important; }
+html[data-skin="neon"] .sk-overlay { background: rgba(2, 4, 12, .72) !important; backdrop-filter: blur(8px); }
+html[data-skin="neon"] .sk-btn-soft {
+  background: rgba(148, 233, 255, .08) !important;
+  color: rgba(206, 230, 255, .82) !important;
+  border: 1px solid rgba(56, 189, 248, .22) !important;
+  box-shadow: none !important;
+}
+html[data-skin="neon"] .sk-banner {
+  background: #eef6ff !important;
+  border: 1px solid rgba(56, 189, 248, .38) !important;
+  box-shadow: 0 14px 34px -22px rgba(34, 211, 238, .95) !important;
+}
+
+/* ============================================================
+   5. NEUMORPHISM — monokrom, timbul & tenggelam
+   ============================================================ */
+html[data-skin="neo"] body { background: #e7ebf1 !important; }
+html[data-skin="neo"] .sk-page { background: linear-gradient(160deg, #eef1f6, #e2e7ef) !important; }
+html[data-skin="neo"] .sk-panel {
+  background: #e8ecf3 !important;
+  border: none !important;
+  box-shadow: 12px 12px 28px rgba(163, 177, 198, .55), -12px -12px 28px rgba(255, 255, 255, .95) !important;
+}
+html[data-skin="neo"] .sk-surface {
+  background: #e8ecf3 !important;
+  border: none !important;
+  box-shadow: 7px 7px 16px rgba(163, 177, 198, .5), -7px -7px 16px rgba(255, 255, 255, .95) !important;
+}
+html[data-skin="neo"] .sk-chip {
+  border: none !important;
+  box-shadow: inset 2px 2px 5px rgba(163, 177, 198, .45), inset -2px -2px 5px rgba(255, 255, 255, .85) !important;
+}
+html[data-skin="neo"] .sk-tint { box-shadow: inset 5px 5px 12px rgba(163, 177, 198, .35), inset -5px -5px 12px rgba(255, 255, 255, .8) !important; }
+html[data-skin="neo"] .sk-field {
+  background: #e8ecf3 !important;
+  border: none !important;
+  box-shadow: inset 5px 5px 11px rgba(163, 177, 198, .5), inset -5px -5px 11px rgba(255, 255, 255, .95) !important;
+}
+html[data-skin="neo"] .sk-btn {
+  box-shadow: 5px 5px 12px rgba(163, 177, 198, .6), -5px -5px 12px rgba(255, 255, 255, .95) !important;
+}
+html[data-skin="neo"] .sk-btn:active { box-shadow: inset 4px 4px 10px rgba(163, 177, 198, .6), inset -4px -4px 10px rgba(255, 255, 255, .95) !important; }
+html[data-skin="neo"] .sk-overlay { background: rgba(71, 85, 105, .3) !important; backdrop-filter: blur(4px); }
+
+/* ============================================================
+   6. LEGOMORPHISM — balok mainan, garis tebal, bayangan keras
+   ============================================================ */
+html[data-skin="lego"] body { background: #eaf1fb !important; }
+html[data-skin="lego"] .sk-page {
+  background:
+    radial-gradient(circle at 7px 7px, rgba(20, 40, 77, .12) 3px, transparent 3.5px) 0 0 / 24px 24px,
+    linear-gradient(160deg, #eef4ff, #dbe7fb) !important;
+  background-attachment: fixed !important;
+}
+html[data-skin="lego"] .sk-panel {
+  position: relative;
+  background: #ffffff !important;
+  border: 4px solid #14284d !important;
+  box-shadow: 10px 10px 0 rgba(20, 40, 77, .85) !important;
+}
+html[data-skin="lego"] .sk-surface {
+  background: #ffffff !important;
+  border: 3px solid #1d3a6b !important;
+  box-shadow: 6px 6px 0 rgba(29, 58, 107, .7) !important;
+}
+html[data-skin="lego"] .sk-chip {
+  border: 2px solid rgba(20, 40, 77, .55) !important;
+  box-shadow: 3px 3px 0 rgba(20, 40, 77, .35) !important;
+}
+html[data-skin="lego"] .sk-tint { border: 2px dashed rgba(20, 40, 77, .28) !important; }
+html[data-skin="lego"] .sk-field {
+  background: #fff !important;
+  border: 3px solid #1d3a6b !important;
+  box-shadow: inset 0 3px 0 rgba(20, 40, 77, .08) !important;
+}
+html[data-skin="lego"] .sk-btn {
+  border: 3px solid rgba(20, 40, 77, .85) !important;
+  box-shadow: 4px 4px 0 rgba(20, 40, 77, .8) !important;
+}
+html[data-skin="lego"] .sk-btn:active { transform: translate(3px, 3px); box-shadow: none !important; }
+html[data-skin="lego"] .sk-overlay { background: rgba(20, 40, 77, .35) !important; backdrop-filter: blur(4px); }
+
+/* ============================================================
+   7. AURORA — gradien senja, kartu kaca lembut
+   ============================================================ */
+html[data-skin="aurora"] body { background: #eef0ff !important; }
+html[data-skin="aurora"] .sk-page {
+  background:
+    radial-gradient(50% 40% at 0% 0%, rgba(167, 139, 250, .45), transparent 70%),
+    radial-gradient(45% 40% at 100% 5%, rgba(240, 171, 252, .45), transparent 70%),
+    radial-gradient(55% 45% at 50% 100%, rgba(103, 232, 249, .45), transparent 70%),
+    linear-gradient(160deg, #eef0ff, #f7f0ff 50%, #eafcff) !important;
+  background-attachment: fixed !important;
+}
+html[data-skin="aurora"] .sk-panel {
+  background: linear-gradient(160deg, rgba(255, 255, 255, .84), rgba(255, 255, 255, .62)) !important;
+  border: 1px solid rgba(255, 255, 255, .92) !important;
+  box-shadow: 0 26px 60px -26px rgba(129, 140, 248, .65), inset 0 1px 0 #fff !important;
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+}
+html[data-skin="aurora"] .sk-surface {
+  background: rgba(255, 255, 255, .74) !important;
+  border: 1px solid rgba(255, 255, 255, .92) !important;
+  box-shadow: 0 12px 28px -20px rgba(129, 140, 248, .8) !important;
+}
+html[data-skin="aurora"] .sk-chip {
+  border: 1px solid rgba(255, 255, 255, .9) !important;
+  box-shadow: 0 5px 12px -8px rgba(129, 140, 248, .9) !important;
+}
+html[data-skin="aurora"] .sk-tint { box-shadow: inset 0 1px 0 rgba(255, 255, 255, .6) !important; }
+html[data-skin="aurora"] .sk-field {
+  background: rgba(255, 255, 255, .8) !important;
+  border: 1px solid rgba(255, 255, 255, .95) !important;
+  box-shadow: inset 0 1px 0 #fff, 0 8px 18px -14px rgba(129, 140, 248, .9) !important;
+}
+html[data-skin="aurora"] .sk-btn {
+  box-shadow: 0 12px 26px -16px rgba(129, 140, 248, .95), inset 0 1px 0 rgba(255, 255, 255, .6) !important;
+}
+html[data-skin="aurora"] .sk-overlay { background: rgba(76, 29, 149, .3) !important; backdrop-filter: blur(5px); }
+html[data-skin="aurora"] .sk-banner { background: rgba(255, 255, 255, .76) !important; border: 1px solid rgba(255, 255, 255, .9) !important; }
+
+/* ============================================================
+   SKALA SUDUT (radius) per tema
+   ============================================================ */
+html[data-skin] .sk-pill { border-radius: 999px !important; }
+
+html[data-skin="clay"] .sk-r-s { border-radius: 16px !important; }
+html[data-skin="clay"] .sk-r-m { border-radius: 22px !important; }
+html[data-skin="clay"] .sk-r-l { border-radius: 28px !important; }
+html[data-skin="clay"] .sk-r-xl { border-radius: 36px !important; }
+
+html[data-skin="glass"] .sk-r-s { border-radius: 12px !important; }
+html[data-skin="glass"] .sk-r-m { border-radius: 16px !important; }
+html[data-skin="glass"] .sk-r-l { border-radius: 22px !important; }
+html[data-skin="glass"] .sk-r-xl { border-radius: 28px !important; }
+
+html[data-skin="neon"] .sk-r-s { border-radius: 9px !important; }
+html[data-skin="neon"] .sk-r-m { border-radius: 12px !important; }
+html[data-skin="neon"] .sk-r-l { border-radius: 16px !important; }
+html[data-skin="neon"] .sk-r-xl { border-radius: 22px !important; }
+
+html[data-skin="neo"] .sk-r-s { border-radius: 12px !important; }
+html[data-skin="neo"] .sk-r-m { border-radius: 18px !important; }
+html[data-skin="neo"] .sk-r-l { border-radius: 24px !important; }
+html[data-skin="neo"] .sk-r-xl { border-radius: 30px !important; }
+
+html[data-skin="lego"] .sk-r-s { border-radius: 8px !important; }
+html[data-skin="lego"] .sk-r-m { border-radius: 10px !important; }
+html[data-skin="lego"] .sk-r-l { border-radius: 14px !important; }
+html[data-skin="lego"] .sk-r-xl { border-radius: 18px !important; }
+
+html[data-skin="aurora"] .sk-r-s { border-radius: 12px !important; }
+html[data-skin="aurora"] .sk-r-m { border-radius: 18px !important; }
+html[data-skin="aurora"] .sk-r-l { border-radius: 24px !important; }
+html[data-skin="aurora"] .sk-r-xl { border-radius: 30px !important; }
+
+/* Panel admin ikut tema gelap */
+html[data-skin="neon"] .sk-admin-panel { background: #0b1020; }
+
+@media (max-width: 380px) {
+  .sk-admin-grid { grid-template-columns: 1fr; }
+}
+
+/* ============================================================
+   TEMA TAMBAHAN — batch 2 (12 tema baru)
+   Semua aturan memakai !important karena aplikasi memakai inline style.
+   ============================================================ */
+
+/* pergantian tema harus instan, jangan animasi background lama */
+html[data-skin] .sk-page { transition: none !important; }
+
+/* ---------- aturan umum untuk tema gelap ---------- */
+html[data-tone="dark"] { color-scheme: dark; }
+html[data-tone="dark"] .sk-txt { color: var(--sk-fg, #e7f2ff) !important; }
+html[data-tone="dark"] .sk-txt-muted { color: var(--sk-fg-dim, rgba(190, 214, 255, .62)) !important; }
+html[data-tone="dark"] .sk-panel,
+html[data-tone="dark"] .sk-surface { color: var(--sk-fg, #e7f2ff) !important; }
+html[data-tone="dark"] .sk-field { color: var(--sk-fg, #e7f2ff) !important; }
+html[data-tone="dark"] .sk-field::placeholder { color: var(--sk-fg-dim, rgba(190, 214, 255, .5)) !important; }
+html[data-tone="dark"] .sk-btn .sk-txt,
+html[data-tone="dark"] .sk-btn .sk-txt-muted,
+html[data-tone="dark"] .sk-chip .sk-txt,
+html[data-tone="dark"] .sk-chip .sk-txt-muted,
+html[data-tone="dark"] .sk-accent .sk-txt,
+html[data-tone="dark"] .sk-accent .sk-txt-muted,
+html[data-tone="dark"] .sk-banner .sk-txt,
+html[data-tone="dark"] .sk-banner .sk-txt-muted,
+html[data-tone="dark"] .sk-field .sk-txt,
+html[data-tone="dark"] .sk-field .sk-txt-muted { color: inherit !important; }
+
+html[data-skin="neon"] { --sk-fg: #e7f2ff; --sk-fg-dim: rgba(190, 214, 255, .62); }
+
+/* ============================================================
+   SAKURA — lembut pink, kelopak
+   ============================================================ */
+html[data-skin="sakura"] body { background: #fff4f7 !important; }
+html[data-skin="sakura"] .sk-page {
+  background:
+    radial-gradient(circle at 12% 8%, rgba(251, 207, 232, .55) 0 14px, transparent 15px),
+    radial-gradient(circle at 88% 14%, rgba(252, 165, 205, .4) 0 9px, transparent 10px),
+    radial-gradient(circle at 70% 92%, rgba(251, 207, 232, .45) 0 12px, transparent 13px),
+    linear-gradient(160deg, #fff8fa, #ffeef4 60%, #ffe3ee) !important;
+  font-family: "Segoe UI", "Nunito", system-ui, sans-serif !important;
+}
+html[data-skin="sakura"] .sk-panel {
+  background: #fffdfe !important;
+  border: 1px solid #ffd9e5 !important;
+  box-shadow: 0 22px 48px -24px rgba(244, 114, 182, .6), inset 0 1px 0 #fff !important;
+}
+html[data-skin="sakura"] .sk-surface {
+  background: #fffafc !important;
+  border: 1px solid #ffe4ec !important;
+  box-shadow: 0 12px 26px -20px rgba(244, 114, 182, .7) !important;
+}
+html[data-skin="sakura"] .sk-chip { border: 1px solid #ffd9e5 !important; box-shadow: 0 4px 10px -7px rgba(244, 114, 182, .9) !important; }
+html[data-skin="sakura"] .sk-tint { box-shadow: inset 0 1px 0 rgba(255, 255, 255, .7) !important; }
+html[data-skin="sakura"] .sk-banner { background: #fff2f7 !important; border: 1px solid #ffd9e5 !important; }
+html[data-skin="sakura"] .sk-field { background: #fff7fa !important; border: 1px solid #ffd9e5 !important; box-shadow: inset 0 1px 0 #fff !important; }
+html[data-skin="sakura"] .sk-btn { box-shadow: 0 10px 22px -14px rgba(244, 114, 182, .95), inset 0 1px 0 rgba(255, 255, 255, .5) !important; }
+html[data-skin="sakura"] .sk-overlay { background: rgba(131, 24, 67, .32) !important; backdrop-filter: blur(4px); }
+
+/* ============================================================
+   MINT FRESH — segar hijau toska
+   ============================================================ */
+html[data-skin="mint"] body { background: #eafff5 !important; }
+html[data-skin="mint"] .sk-page {
+  background:
+    radial-gradient(45% 35% at 8% 4%, rgba(167, 243, 208, .6), transparent 70%),
+    radial-gradient(40% 35% at 95% 10%, rgba(153, 246, 228, .55), transparent 70%),
+    linear-gradient(160deg, #f4fffb, #e3fbf1 55%, #d5f8ec) !important;
+}
+html[data-skin="mint"] .sk-panel {
+  background: #ffffff !important;
+  border: 1px solid #c9f0e2 !important;
+  box-shadow: 0 22px 46px -26px rgba(16, 185, 129, .55), inset 0 1px 0 #fff !important;
+}
+html[data-skin="mint"] .sk-surface {
+  background: #f9fffc !important;
+  border: 1px solid #dcf7ec !important;
+  box-shadow: 0 10px 24px -20px rgba(16, 185, 129, .75) !important;
+}
+html[data-skin="mint"] .sk-chip { border: 1px solid #c9f0e2 !important; box-shadow: 0 4px 10px -8px rgba(16, 185, 129, .9) !important; }
+html[data-skin="mint"] .sk-tint { box-shadow: inset 0 1px 0 rgba(255, 255, 255, .8) !important; }
+html[data-skin="mint"] .sk-banner { background: #f2fffa !important; border: 1px solid #c9f0e2 !important; }
+html[data-skin="mint"] .sk-field { background: #f4fffa !important; border: 1px solid #c9f0e2 !important; }
+html[data-skin="mint"] .sk-btn { box-shadow: 0 10px 22px -14px rgba(16, 185, 129, .9), inset 0 1px 0 rgba(255, 255, 255, .5) !important; }
+html[data-skin="mint"] .sk-overlay { background: rgba(6, 78, 59, .3) !important; backdrop-filter: blur(4px); }
+
+/* ============================================================
+   SUNSET — hangat jingga
+   ============================================================ */
+html[data-skin="sunset"] body { background: #fff5e8 !important; }
+html[data-skin="sunset"] .sk-page {
+  background:
+    radial-gradient(55% 40% at 50% 0%, rgba(253, 186, 116, .55), transparent 70%),
+    radial-gradient(45% 40% at 100% 100%, rgba(251, 146, 60, .35), transparent 70%),
+    linear-gradient(160deg, #fffaf3, #ffeacf 55%, #ffd9ad) !important;
+}
+html[data-skin="sunset"] .sk-panel {
+  background: #fffaf4 !important;
+  border: 1px solid #ffe2bf !important;
+  box-shadow: 0 24px 50px -24px rgba(249, 115, 22, .55), inset 0 1px 0 #fff !important;
+}
+html[data-skin="sunset"] .sk-surface {
+  background: #fff8ef !important;
+  border: 1px solid #ffe8cd !important;
+  box-shadow: 0 12px 26px -20px rgba(249, 115, 22, .7) !important;
+}
+html[data-skin="sunset"] .sk-chip { border: 1px solid #ffe2bf !important; box-shadow: 0 4px 10px -8px rgba(249, 115, 22, .9) !important; }
+html[data-skin="sunset"] .sk-tint { box-shadow: inset 0 1px 0 rgba(255, 255, 255, .75) !important; }
+html[data-skin="sunset"] .sk-banner { background: #fff6ea !important; border: 1px solid #ffe2bf !important; }
+html[data-skin="sunset"] .sk-field { background: #fff9f2 !important; border: 1px solid #ffdfb8 !important; }
+html[data-skin="sunset"] .sk-btn { box-shadow: 0 10px 22px -14px rgba(249, 115, 22, .95), inset 0 1px 0 rgba(255, 255, 255, .55) !important; }
+html[data-skin="sunset"] .sk-overlay { background: rgba(124, 45, 18, .32) !important; backdrop-filter: blur(4px); }
+
+/* ============================================================
+   CANDY GLOSS — mengkilap, pastel
+   ============================================================ */
+html[data-skin="candy"] body { background: #ffeaf7 !important; }
+html[data-skin="candy"] .sk-page {
+  background:
+    radial-gradient(45% 35% at 10% 5%, rgba(255, 214, 240, .8), transparent 70%),
+    radial-gradient(45% 35% at 92% 8%, rgba(224, 231, 255, .8), transparent 70%),
+    radial-gradient(50% 40% at 50% 100%, rgba(207, 250, 254, .8), transparent 70%),
+    linear-gradient(150deg, #fff0f9, #f3f0ff 55%, #eafcff) !important;
+}
+html[data-skin="candy"] .sk-panel {
+  background: linear-gradient(180deg, #ffffff, rgba(255, 255, 255, .82)) !important;
+  border: 1px solid #ffffff !important;
+  box-shadow: 0 26px 52px -26px rgba(236, 72, 153, .5), 0 10px 24px -18px rgba(139, 92, 246, .55),
+              inset 0 1px 0 #fff !important;
+}
+html[data-skin="candy"] .sk-surface {
+  background: linear-gradient(180deg, #ffffff, rgba(255, 255, 255, .88)) !important;
+  border: 1px solid rgba(255, 255, 255, .95) !important;
+  box-shadow: 0 14px 28px -22px rgba(236, 72, 153, .8), inset 0 1px 0 #fff !important;
+}
+html[data-skin="candy"] .sk-chip { border: 1px solid rgba(255, 255, 255, .95) !important; box-shadow: inset 0 -2px 6px rgba(236, 72, 153, .18), 0 4px 10px -7px rgba(139, 92, 246, .9) !important; }
+html[data-skin="candy"] .sk-tint { box-shadow: inset 0 1px 0 rgba(255, 255, 255, .9) !important; }
+html[data-skin="candy"] .sk-banner { background: rgba(255, 255, 255, .8) !important; border: 1px solid #fff !important; }
+html[data-skin="candy"] .sk-field { background: #fff !important; border: 1px solid #f3d9ff !important; box-shadow: inset 0 2px 5px rgba(236, 72, 153, .12) !important; }
+html[data-skin="candy"] .sk-btn { box-shadow: 0 12px 24px -14px rgba(236, 72, 153, .9), inset 0 1px 0 rgba(255, 255, 255, .65) !important; }
+html[data-skin="candy"] .sk-overlay { background: rgba(88, 28, 135, .3) !important; backdrop-filter: blur(5px); }
+
+/* ============================================================
+   RETRO 90s — Memphis, warna blok
+   ============================================================ */
+html[data-skin="retro"] body { background: #e8fbf3 !important; }
+html[data-skin="retro"] .sk-page {
+  background:
+    radial-gradient(circle at 18% 12%, rgba(244, 114, 182, .30) 0 10px, transparent 11px),
+    radial-gradient(circle at 82% 20%, rgba(56, 189, 248, .28) 0 8px, transparent 9px),
+    radial-gradient(circle at 65% 88%, rgba(250, 204, 21, .35) 0 12px, transparent 13px),
+    repeating-linear-gradient(135deg, rgba(16, 185, 129, .10) 0 10px, transparent 10px 34px),
+    #e8fbf3 !important;
+  font-family: "Trebuchet MS", "Segoe UI", system-ui, sans-serif !important;
+}
+html[data-skin="retro"] .sk-panel {
+  background: #fffdf8 !important;
+  border: 3px solid #2b2d42 !important;
+  box-shadow: 6px 6px 0 #2b2d42 !important;
+}
+html[data-skin="retro"] .sk-surface {
+  background: #fffef9 !important;
+  border: 2px solid #2b2d42 !important;
+  box-shadow: 4px 4px 0 rgba(43, 45, 66, .85) !important;
+}
+html[data-skin="retro"] .sk-chip { border: 2px solid #2b2d42 !important; box-shadow: 2px 2px 0 rgba(43, 45, 66, .8) !important; }
+html[data-skin="retro"] .sk-tint { border: 2px dashed rgba(43, 45, 66, .5) !important; }
+html[data-skin="retro"] .sk-banner { background: #fffbe8 !important; border: 2px solid #2b2d42 !important; box-shadow: 3px 3px 0 rgba(43, 45, 66, .8) !important; }
+html[data-skin="retro"] .sk-field { background: #fff !important; border: 3px solid #2b2d42 !important; }
+html[data-skin="retro"] .sk-btn { border: 3px solid #2b2d42 !important; box-shadow: 4px 4px 0 #2b2d42 !important; }
+html[data-skin="retro"] .sk-btn:active { transform: translate(3px, 3px); box-shadow: none !important; }
+html[data-skin="retro"] .sk-overlay { background: rgba(43, 45, 66, .4) !important; backdrop-filter: blur(3px); }
+
+/* ============================================================
+   BRUTALISM — tebal, keras, kuning
+   ============================================================ */
+html[data-skin="brutalism"] body { background: #ffe66d !important; }
+html[data-skin="brutalism"] .sk-page {
+  background:
+    repeating-linear-gradient(45deg, rgba(0, 0, 0, .05) 0 3px, transparent 3px 12px),
+    #ffe66d !important;
+  font-family: "Arial Black", "Helvetica Neue", Impact, system-ui, sans-serif !important;
+}
+html[data-skin="brutalism"] .sk-panel {
+  background: #fffdf2 !important;
+  border: 3px solid #111111 !important;
+  box-shadow: 8px 8px 0 #111111 !important;
+}
+html[data-skin="brutalism"] .sk-surface {
+  background: #ffffff !important;
+  border: 2px solid #111111 !important;
+  box-shadow: 4px 4px 0 #111111 !important;
+}
+html[data-skin="brutalism"] .sk-chip { border: 2px solid #111111 !important; box-shadow: 2px 2px 0 #111111 !important; }
+html[data-skin="brutalism"] .sk-tint { border: 2px solid #111111 !important; }
+html[data-skin="brutalism"] .sk-banner { background: #fff7c2 !important; border: 2px solid #111111 !important; box-shadow: 4px 4px 0 #111111 !important; }
+html[data-skin="brutalism"] .sk-field { background: #ffffff !important; border: 3px solid #111111 !important; box-shadow: inset 3px 3px 0 rgba(0, 0, 0, .08) !important; }
+html[data-skin="brutalism"] .sk-btn { border: 3px solid #111111 !important; box-shadow: 4px 4px 0 #111111 !important; }
+html[data-skin="brutalism"] .sk-btn:active { transform: translate(3px, 3px); box-shadow: none !important; }
+html[data-skin="brutalism"] .sk-overlay { background: rgba(17, 17, 17, .4) !important; backdrop-filter: blur(2px); }
+html[data-skin="brutalism"] {
+  --sk-panel-bg: #fffdf2;
+  --sk-panel-fg: #111111;
+  --sk-panel-border: #111111;
+  --sk-panel-soft: #fff3b0;
+  --sk-panel-accent: #111111;
+  --sk-panel-shadow: 8px 8px 0 #111111;
+}
+html[data-skin="brutalism"] .sk-admin-panel { border-width: 3px; }
+html[data-skin="brutalism"] .sk-admin-title { text-transform: uppercase; letter-spacing: .02em; }
+
+/* ============================================================
+   MONO PAPER — hitam putih bersih
+   ============================================================ */
+html[data-skin="mono"] body { background: #f2f2f2 !important; }
+html[data-skin="mono"] .sk-page {
+  background:
+    repeating-linear-gradient(0deg, rgba(0, 0, 0, .015) 0 1px, transparent 1px 4px),
+    #f4f4f4 !important;
+  font-family: "Helvetica Neue", Arial, system-ui, sans-serif !important;
+}
+html[data-skin="mono"] .sk-panel {
+  background: #ffffff !important;
+  border: 1px solid #dcdcdc !important;
+  box-shadow: 0 12px 30px -24px rgba(0, 0, 0, .7), inset 0 1px 0 #fff !important;
+}
+html[data-skin="mono"] .sk-surface {
+  background: #fbfbfb !important;
+  border: 1px solid #e5e5e5 !important;
+  box-shadow: none !important;
+}
+html[data-skin="mono"] .sk-chip { border: 1px solid #d4d4d4 !important; box-shadow: none !important; }
+html[data-skin="mono"] .sk-tint { box-shadow: inset 0 0 0 1px rgba(0, 0, 0, .05) !important; }
+html[data-skin="mono"] .sk-banner { background: #fafafa !important; border: 1px solid #dcdcdc !important; }
+html[data-skin="mono"] .sk-field { background: #fff !important; border: 1px solid #cfcfcf !important; }
+html[data-skin="mono"] .sk-btn { border: 1px solid #111 !important; box-shadow: 0 2px 0 #d4d4d4 !important; }
+html[data-skin="mono"] .sk-btn:active { transform: translateY(1px); box-shadow: none !important; }
+html[data-skin="mono"] .sk-overlay { background: rgba(0, 0, 0, .35) !important; backdrop-filter: blur(2px); }
+html[data-skin="mono"] {
+  --sk-panel-bg: #ffffff;
+  --sk-panel-fg: #111111;
+  --sk-panel-border: #111111;
+  --sk-panel-soft: #f4f4f4;
+  --sk-panel-accent: #111111;
+}
+
+/* ============================================================
+   CYBERPUNK — magenta & cyan, grid
+   ============================================================ */
+html[data-skin="cyberpunk"] {
+  --sk-fg: #e9f6ff;
+  --sk-fg-dim: rgba(160, 220, 255, .7);
+  --sk-panel-bg: #120a24;
+  --sk-panel-fg: #e9f6ff;
+  --sk-panel-border: rgba(255, 45, 149, .45);
+  --sk-panel-soft: rgba(34, 211, 238, .08);
+  --sk-panel-accent: #ff2d95;
+  --sk-panel-shadow: 0 0 40px -12px rgba(255, 45, 149, .9);
+}
+html[data-skin="cyberpunk"] body { background: #0a0616 !important; }
+html[data-skin="cyberpunk"] .sk-page {
+  background:
+    linear-gradient(rgba(255, 45, 149, .07) 1px, transparent 1px) 0 0 / 30px 30px,
+    linear-gradient(90deg, rgba(34, 211, 238, .07) 1px, transparent 1px) 0 0 / 30px 30px,
+    radial-gradient(55% 45% at 50% 0%, rgba(255, 45, 149, .28), transparent 70%),
+    radial-gradient(50% 40% at 90% 90%, rgba(34, 211, 238, .18), transparent 70%),
+    #0a0616 !important;
+  background-attachment: fixed !important;
+}
+html[data-skin="cyberpunk"] .sk-panel {
+  background: linear-gradient(160deg, rgba(24, 12, 46, .96), rgba(9, 5, 20, .98)) !important;
+  border: 1px solid rgba(255, 45, 149, .45) !important;
+  box-shadow: 0 0 34px -10px rgba(255, 45, 149, .85), inset 0 0 0 1px rgba(34, 211, 238, .1) !important;
+}
+html[data-skin="cyberpunk"] .sk-surface {
+  background: rgba(15, 8, 32, .92) !important;
+  border: 1px solid rgba(34, 211, 238, .28) !important;
+  box-shadow: 0 0 18px -8px rgba(34, 211, 238, .75) !important;
+}
+html[data-skin="cyberpunk"] .sk-chip { border: 1px solid rgba(255, 255, 255, .2) !important; box-shadow: 0 0 12px -3px rgba(255, 45, 149, .85) !important; }
+html[data-skin="cyberpunk"] .sk-tint {
+  background: linear-gradient(120deg, rgba(255, 45, 149, .2), rgba(34, 211, 238, .2)) !important;
+  border: 1px solid rgba(255, 45, 149, .3) !important;
+}
+html[data-skin="cyberpunk"] .sk-banner { background: #f6f2ff !important; border: 1px solid rgba(255, 45, 149, .45) !important; }
+html[data-skin="cyberpunk"] .sk-field {
+  background: rgba(10, 5, 20, .95) !important;
+  border: 1px solid rgba(34, 211, 238, .45) !important;
+  box-shadow: inset 0 0 16px rgba(255, 45, 149, .12) !important;
+}
+html[data-skin="cyberpunk"] .sk-btn { box-shadow: 0 0 22px -6px rgba(255, 45, 149, .9), inset 0 1px 0 rgba(255, 255, 255, .1) !important; }
+html[data-skin="cyberpunk"] .sk-btn-dark { background: linear-gradient(135deg, #ff2d95, #22d3ee) !important; color: #08030f !important; }
+html[data-skin="cyberpunk"] .sk-btn-soft {
+  background: rgba(34, 211, 238, .08) !important;
+  color: rgba(190, 235, 255, .85) !important;
+  border: 1px solid rgba(34, 211, 238, .3) !important;
+  box-shadow: none !important;
+}
+html[data-skin="cyberpunk"] .sk-overlay { background: rgba(4, 2, 10, .78) !important; backdrop-filter: blur(8px); }
+
+/* ============================================================
+   VAPORWAVE — senja ungu-pink
+   ============================================================ */
+html[data-skin="vaporwave"] {
+  --sk-fg: #ffeaff;
+  --sk-fg-dim: rgba(255, 200, 255, .72);
+  --sk-panel-bg: #2b0d42;
+  --sk-panel-fg: #ffeaff;
+  --sk-panel-border: rgba(255, 113, 206, .45);
+  --sk-panel-soft: rgba(255, 255, 255, .08);
+  --sk-panel-accent: #ff71ce;
+  --sk-panel-shadow: 0 26px 60px -20px rgba(255, 113, 206, .8);
+}
+html[data-skin="vaporwave"] body { background: #26103b !important; }
+html[data-skin="vaporwave"] .sk-page {
+  background:
+    radial-gradient(55% 40% at 50% 100%, rgba(255, 113, 206, .45), transparent 70%),
+    radial-gradient(40% 30% at 12% 10%, rgba(1, 205, 254, .22), transparent 70%),
+    linear-gradient(180deg, #1b0a2e 0%, #3b1054 45%, #6d1b63 100%) !important;
+  background-attachment: fixed !important;
+}
+html[data-skin="vaporwave"] .sk-panel {
+  background: linear-gradient(160deg, rgba(58, 18, 88, .9), rgba(30, 10, 48, .92)) !important;
+  border: 1px solid rgba(255, 113, 206, .45) !important;
+  box-shadow: 0 24px 56px -24px rgba(255, 113, 206, .85), inset 0 1px 0 rgba(255, 255, 255, .1) !important;
+  backdrop-filter: blur(8px);
+}
+html[data-skin="vaporwave"] .sk-surface {
+  background: rgba(63, 20, 95, .78) !important;
+  border: 1px solid rgba(255, 255, 255, .16) !important;
+  box-shadow: 0 0 20px -10px rgba(1, 205, 254, .8) !important;
+}
+html[data-skin="vaporwave"] .sk-chip { border: 1px solid rgba(255, 255, 255, .24) !important; box-shadow: 0 0 14px -4px rgba(255, 113, 206, .9) !important; }
+html[data-skin="vaporwave"] .sk-tint {
+  background: linear-gradient(120deg, rgba(255, 113, 206, .22), rgba(1, 205, 254, .2)) !important;
+  border: 1px solid rgba(255, 113, 206, .3) !important;
+}
+html[data-skin="vaporwave"] .sk-banner { background: #fff2fd !important; border: 1px solid rgba(255, 113, 206, .45) !important; }
+html[data-skin="vaporwave"] .sk-field {
+  background: rgba(30, 8, 48, .92) !important;
+  border: 1px solid rgba(255, 113, 206, .4) !important;
+}
+html[data-skin="vaporwave"] .sk-btn { box-shadow: 0 0 24px -8px rgba(255, 113, 206, .9), inset 0 1px 0 rgba(255, 255, 255, .14) !important; }
+html[data-skin="vaporwave"] .sk-btn-dark { background: linear-gradient(135deg, #ff71ce, #01cdfe) !important; color: #1b0a2e !important; }
+html[data-skin="vaporwave"] .sk-btn-soft {
+  background: rgba(255, 255, 255, .08) !important;
+  color: rgba(255, 220, 255, .85) !important;
+  border: 1px solid rgba(255, 113, 206, .3) !important;
+  box-shadow: none !important;
+}
+html[data-skin="vaporwave"] .sk-overlay { background: rgba(20, 4, 32, .74) !important; backdrop-filter: blur(7px); }
+
+/* ============================================================
+   MIDNIGHT GOLD — gelap elegan
+   ============================================================ */
+html[data-skin="midnight"] {
+  --sk-fg: #f6eedb;
+  --sk-fg-dim: rgba(246, 238, 219, .62);
+  --sk-panel-bg: #111726;
+  --sk-panel-fg: #f6eedb;
+  --sk-panel-border: rgba(212, 175, 55, .38);
+  --sk-panel-soft: rgba(212, 175, 55, .09);
+  --sk-panel-accent: #d4af37;
+  --sk-panel-shadow: 0 26px 60px -24px rgba(0, 0, 0, .9);
+}
+html[data-skin="midnight"] body { background: #080b12 !important; }
+html[data-skin="midnight"] .sk-page {
+  background:
+    radial-gradient(50% 40% at 50% 0%, rgba(212, 175, 55, .18), transparent 68%),
+    radial-gradient(45% 40% at 95% 95%, rgba(59, 130, 246, .12), transparent 70%),
+    #080b12 !important;
+  background-attachment: fixed !important;
+  font-family: "Georgia", "Times New Roman", serif !important;
+}
+html[data-skin="midnight"] .sk-panel {
+  background: linear-gradient(160deg, #141b2c, #0d1320) !important;
+  border: 1px solid rgba(212, 175, 55, .38) !important;
+  box-shadow: 0 26px 60px -28px rgba(0, 0, 0, .95), inset 0 1px 0 rgba(246, 238, 219, .08) !important;
+}
+html[data-skin="midnight"] .sk-surface {
+  background: #121a2a !important;
+  border: 1px solid rgba(212, 175, 55, .22) !important;
+  box-shadow: 0 10px 26px -20px rgba(0, 0, 0, .95) !important;
+}
+html[data-skin="midnight"] .sk-chip { border: 1px solid rgba(212, 175, 55, .4) !important; box-shadow: 0 0 14px -6px rgba(212, 175, 55, .9) !important; }
+html[data-skin="midnight"] .sk-tint {
+  background: linear-gradient(120deg, rgba(212, 175, 55, .18), rgba(212, 175, 55, .06)) !important;
+  border: 1px solid rgba(212, 175, 55, .25) !important;
+}
+html[data-skin="midnight"] .sk-banner { background: #fbf6e9 !important; border: 1px solid rgba(212, 175, 55, .45) !important; }
+html[data-skin="midnight"] .sk-field {
+  background: #0b1119 !important;
+  border: 1px solid rgba(212, 175, 55, .32) !important;
+}
+html[data-skin="midnight"] .sk-btn { box-shadow: 0 0 22px -10px rgba(212, 175, 55, .9), inset 0 1px 0 rgba(246, 238, 219, .1) !important; }
+html[data-skin="midnight"] .sk-btn-soft {
+  background: rgba(212, 175, 55, .08) !important;
+  color: rgba(246, 238, 219, .85) !important;
+  border: 1px solid rgba(212, 175, 55, .3) !important;
+  box-shadow: none !important;
+}
+html[data-skin="midnight"] .sk-overlay { background: rgba(3, 5, 9, .8) !important; backdrop-filter: blur(7px); }
+
+/* ============================================================
+   BLUEPRINT — biru teknis, garis cetak
+   ============================================================ */
+html[data-skin="blueprint"] {
+  --sk-fg: #e0efff;
+  --sk-fg-dim: rgba(191, 219, 254, .7);
+  --sk-panel-bg: #0a3055;
+  --sk-panel-fg: #e0efff;
+  --sk-panel-border: rgba(255, 255, 255, .38);
+  --sk-panel-soft: rgba(255, 255, 255, .09);
+  --sk-panel-accent: #93c5fd;
+  --sk-panel-shadow: 0 26px 60px -22px rgba(2, 20, 40, .95);
+}
+html[data-skin="blueprint"] body { background: #0a3055 !important; }
+html[data-skin="blueprint"] .sk-page {
+  background:
+    linear-gradient(rgba(255, 255, 255, .07) 1px, transparent 1px) 0 0 / 26px 26px,
+    linear-gradient(90deg, rgba(255, 255, 255, .07) 1px, transparent 1px) 0 0 / 26px 26px,
+    #0d3b66 !important;
+  background-attachment: fixed !important;
+  font-family: ui-monospace, "SFMono-Regular", Consolas, "Courier New", monospace !important;
+}
+html[data-skin="blueprint"] .sk-panel {
+  background: rgba(8, 40, 70, .78) !important;
+  border: 1px dashed rgba(255, 255, 255, .5) !important;
+  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, .08) !important;
+  backdrop-filter: blur(6px);
+}
+html[data-skin="blueprint"] .sk-surface {
+  background: rgba(8, 40, 70, .6) !important;
+  border: 1px solid rgba(255, 255, 255, .28) !important;
+  box-shadow: none !important;
+}
+html[data-skin="blueprint"] .sk-chip { border: 1px dashed rgba(255, 255, 255, .55) !important; box-shadow: none !important; }
+html[data-skin="blueprint"] .sk-tint {
+  background: rgba(255, 255, 255, .07) !important;
+  border: 1px dashed rgba(255, 255, 255, .35) !important;
+}
+html[data-skin="blueprint"] .sk-banner { background: #eaf3ff !important; border: 1px dashed rgba(255, 255, 255, .6) !important; }
+html[data-skin="blueprint"] .sk-field {
+  background: rgba(4, 28, 52, .85) !important;
+  border: 1px dashed rgba(255, 255, 255, .55) !important;
+}
+html[data-skin="blueprint"] .sk-btn { border: 1px solid rgba(255, 255, 255, .5) !important; box-shadow: none !important; }
+html[data-skin="blueprint"] .sk-btn-soft {
+  background: rgba(255, 255, 255, .06) !important;
+  color: rgba(224, 239, 255, .85) !important;
+  border: 1px solid rgba(255, 255, 255, .35) !important;
+  box-shadow: none !important;
+}
+html[data-skin="blueprint"] .sk-overlay { background: rgba(4, 26, 48, .76) !important; backdrop-filter: blur(4px); }
+
+/* ============================================================
+   PIXEL 8-BIT — terminal hijau
+   ============================================================ */
+html[data-skin="pixel"] {
+  --sk-fg: #b9ffc9;
+  --sk-fg-dim: rgba(120, 255, 160, .6);
+  --sk-panel-bg: #071a0d;
+  --sk-panel-fg: #b9ffc9;
+  --sk-panel-border: rgba(34, 197, 94, .55);
+  --sk-panel-soft: rgba(34, 197, 94, .12);
+  --sk-panel-accent: #22c55e;
+  --sk-panel-shadow: 4px 4px 0 rgba(34, 197, 94, .45);
+}
+html[data-skin="pixel"] body { background: #06120a !important; }
+html[data-skin="pixel"] .sk-page {
+  background:
+    repeating-linear-gradient(rgba(0, 0, 0, .32) 0 2px, transparent 2px 4px),
+    radial-gradient(60% 50% at 50% 0%, rgba(34, 197, 94, .16), transparent 70%),
+    #06120a !important;
+  background-attachment: fixed !important;
+  font-family: ui-monospace, "Courier New", Consolas, monospace !important;
+}
+html[data-skin="pixel"] .sk-panel {
+  background: #081c0f !important;
+  border: 2px solid #22c55e !important;
+  box-shadow: 4px 4px 0 rgba(34, 197, 94, .4) !important;
+}
+html[data-skin="pixel"] .sk-surface {
+  background: #0a2312 !important;
+  border: 2px solid rgba(34, 197, 94, .55) !important;
+  box-shadow: 3px 3px 0 rgba(34, 197, 94, .3) !important;
+}
+html[data-skin="pixel"] .sk-chip { border: 2px solid rgba(34, 197, 94, .6) !important; box-shadow: none !important; }
+html[data-skin="pixel"] .sk-tint {
+  background: rgba(34, 197, 94, .12) !important;
+  border: 2px solid rgba(34, 197, 94, .35) !important;
+}
+html[data-skin="pixel"] .sk-banner { background: #eafff0 !important; border: 2px solid #22c55e !important; }
+html[data-skin="pixel"] .sk-field {
+  background: #04150a !important;
+  border: 2px solid rgba(34, 197, 94, .7) !important;
+}
+html[data-skin="pixel"] .sk-btn { border: 2px solid #22c55e !important; box-shadow: 3px 3px 0 rgba(34, 197, 94, .45) !important; }
+html[data-skin="pixel"] .sk-btn:active { transform: translate(2px, 2px); box-shadow: none !important; }
+html[data-skin="pixel"] .sk-btn-soft {
+  background: rgba(34, 197, 94, .12) !important;
+  color: rgba(185, 255, 201, .9) !important;
+  border: 2px solid rgba(34, 197, 94, .5) !important;
+  box-shadow: none !important;
+}
+html[data-skin="pixel"] .sk-overlay { background: rgba(2, 10, 4, .82) !important; backdrop-filter: blur(2px); }
+html[data-skin="pixel"] .sk-pill,
+html[data-skin="pixel"] .sk-btn,
+html[data-skin="pixel"] .sk-field { border-radius: 0 !important; }
+
+/* ============================================================
+   SKALA SUDUT — batch 2
+   ============================================================ */
+html[data-skin="sakura"] .sk-r-s { border-radius: 12px !important; }
+html[data-skin="sakura"] .sk-r-m { border-radius: 18px !important; }
+html[data-skin="sakura"] .sk-r-l { border-radius: 24px !important; }
+html[data-skin="sakura"] .sk-r-xl { border-radius: 30px !important; }
+
+html[data-skin="mint"] .sk-r-s { border-radius: 12px !important; }
+html[data-skin="mint"] .sk-r-m { border-radius: 18px !important; }
+html[data-skin="mint"] .sk-r-l { border-radius: 24px !important; }
+html[data-skin="mint"] .sk-r-xl { border-radius: 28px !important; }
+
+html[data-skin="sunset"] .sk-r-s { border-radius: 12px !important; }
+html[data-skin="sunset"] .sk-r-m { border-radius: 18px !important; }
+html[data-skin="sunset"] .sk-r-l { border-radius: 24px !important; }
+html[data-skin="sunset"] .sk-r-xl { border-radius: 28px !important; }
+
+html[data-skin="candy"] .sk-r-s { border-radius: 14px !important; }
+html[data-skin="candy"] .sk-r-m { border-radius: 20px !important; }
+html[data-skin="candy"] .sk-r-l { border-radius: 26px !important; }
+html[data-skin="candy"] .sk-r-xl { border-radius: 32px !important; }
+
+html[data-skin="retro"] .sk-r-s { border-radius: 10px !important; }
+html[data-skin="retro"] .sk-r-m { border-radius: 14px !important; }
+html[data-skin="retro"] .sk-r-l { border-radius: 18px !important; }
+html[data-skin="retro"] .sk-r-xl { border-radius: 22px !important; }
+
+html[data-skin="brutalism"] .sk-r-s { border-radius: 4px !important; }
+html[data-skin="brutalism"] .sk-r-m { border-radius: 6px !important; }
+html[data-skin="brutalism"] .sk-r-l { border-radius: 8px !important; }
+html[data-skin="brutalism"] .sk-r-xl { border-radius: 10px !important; }
+
+html[data-skin="mono"] .sk-r-s { border-radius: 4px !important; }
+html[data-skin="mono"] .sk-r-m { border-radius: 6px !important; }
+html[data-skin="mono"] .sk-r-l { border-radius: 8px !important; }
+html[data-skin="mono"] .sk-r-xl { border-radius: 10px !important; }
+
+html[data-skin="cyberpunk"] .sk-r-s { border-radius: 4px !important; }
+html[data-skin="cyberpunk"] .sk-r-m { border-radius: 8px !important; }
+html[data-skin="cyberpunk"] .sk-r-l { border-radius: 12px !important; }
+html[data-skin="cyberpunk"] .sk-r-xl { border-radius: 16px !important; }
+
+html[data-skin="vaporwave"] .sk-r-s { border-radius: 8px !important; }
+html[data-skin="vaporwave"] .sk-r-m { border-radius: 14px !important; }
+html[data-skin="vaporwave"] .sk-r-l { border-radius: 20px !important; }
+html[data-skin="vaporwave"] .sk-r-xl { border-radius: 26px !important; }
+
+html[data-skin="midnight"] .sk-r-s { border-radius: 8px !important; }
+html[data-skin="midnight"] .sk-r-m { border-radius: 12px !important; }
+html[data-skin="midnight"] .sk-r-l { border-radius: 16px !important; }
+html[data-skin="midnight"] .sk-r-xl { border-radius: 20px !important; }
+
+html[data-skin="blueprint"] .sk-r-s { border-radius: 2px !important; }
+html[data-skin="blueprint"] .sk-r-m { border-radius: 4px !important; }
+html[data-skin="blueprint"] .sk-r-l { border-radius: 6px !important; }
+html[data-skin="blueprint"] .sk-r-xl { border-radius: 8px !important; }
+
+html[data-skin="pixel"] .sk-r-s,
+html[data-skin="pixel"] .sk-r-m,
+html[data-skin="pixel"] .sk-r-l,
+html[data-skin="pixel"] .sk-r-xl { border-radius: 0 !important; }
+
+@media (max-width: 380px) {
+  .sk-admin-grid { grid-template-columns: 1fr; }
+}
+
+/* ============================================================
+   TEMA 3D / GELEMBUNG / LUCU — batch 3
+   Efek utama: bayangan bertumpuk, kilau atas (inset), sudut besar.
+   ============================================================ */
+
+/* ============================================================
+   BUBBLE 3D — gelembung glossy warna-warni
+   ============================================================ */
+html[data-skin="bubble"] body { background: #eaf4ff !important; }
+html[data-skin="bubble"] .sk-page {
+  background:
+    radial-gradient(28% 24% at 12% 8%, rgba(255, 179, 230, .6), transparent 70%),
+    radial-gradient(26% 22% at 88% 10%, rgba(147, 197, 253, .6), transparent 70%),
+    radial-gradient(28% 24% at 76% 92%, rgba(167, 243, 208, .55), transparent 70%),
+    radial-gradient(24% 20% at 16% 88%, rgba(253, 230, 138, .55), transparent 70%),
+    linear-gradient(160deg, #f5faff, #e9f2ff) !important;
+  background-attachment: fixed !important;
+  font-family: ui-rounded, "Nunito", "SF Pro Rounded", system-ui, sans-serif !important;
+}
+html[data-skin="bubble"] .sk-panel {
+  background: linear-gradient(165deg, #ffffff 0%, #ffffff 55%, #f4f9ff 100%) !important;
+  border: 1px solid #ffffff !important;
+  box-shadow:
+    inset 0 2px 0 rgba(255, 255, 255, .98),
+    inset 0 -12px 24px rgba(147, 197, 253, .26),
+    0 14px 0 -11px rgba(147, 197, 253, .65),
+    0 34px 56px -28px rgba(59, 130, 246, .5) !important;
+}
+html[data-skin="bubble"] .sk-surface {
+  background: linear-gradient(160deg, #ffffff, #f6fbff) !important;
+  border: 1px solid #ffffff !important;
+  box-shadow:
+    inset 0 1px 0 #fff,
+    0 9px 0 -8px rgba(147, 197, 253, .7),
+    0 22px 34px -26px rgba(59, 130, 246, .6) !important;
+}
+html[data-skin="bubble"] .sk-chip {
+  border: 1px solid rgba(255, 255, 255, .95) !important;
+  box-shadow: inset 0 2px 0 rgba(255, 255, 255, .9), 0 6px 10px -7px rgba(59, 130, 246, .6) !important;
+}
+html[data-skin="bubble"] .sk-tint {
+  box-shadow: inset 0 2px 0 rgba(255, 255, 255, .95), inset 0 -8px 16px rgba(147, 197, 253, .3) !important;
+}
+html[data-skin="bubble"] .sk-banner {
+  background: #ffffff !important;
+  border: 1px solid #ffffff !important;
+  box-shadow: 0 12px 26px -20px rgba(59, 130, 246, .85) !important;
+}
+html[data-skin="bubble"] .sk-field {
+  background: #f1f8ff !important;
+  border: 2px solid #ffffff !important;
+  box-shadow: inset 0 3px 8px rgba(147, 197, 253, .45), 0 1px 0 #fff !important;
+}
+html[data-skin="bubble"] .sk-btn {
+  box-shadow: inset 0 3px 0 rgba(255, 255, 255, .7), 0 9px 0 -6px rgba(59, 130, 246, .25),
+              0 18px 26px -16px rgba(59, 130, 246, .75) !important;
+}
+html[data-skin="bubble"] .sk-btn:active { transform: translateY(3px); box-shadow: inset 0 2px 6px rgba(59, 130, 246, .25) !important; }
+html[data-skin="bubble"] .sk-overlay { background: rgba(30, 58, 138, .28) !important; backdrop-filter: blur(6px); }
+html[data-skin="bubble"] .sk-admin-panel { box-shadow: 0 24px 50px -22px rgba(59, 130, 246, .8); }
+
+/* ============================================================
+   JELLY 3D — kenyal, bening, mengkilap
+   ============================================================ */
+html[data-skin="jelly"] body { background: #eef4ff !important; }
+html[data-skin="jelly"] .sk-page {
+  background:
+    radial-gradient(30% 26% at 10% 6%, rgba(165, 243, 252, .75), transparent 72%),
+    radial-gradient(28% 24% at 92% 12%, rgba(196, 181, 253, .7), transparent 72%),
+    radial-gradient(30% 26% at 70% 94%, rgba(251, 207, 232, .7), transparent 72%),
+    linear-gradient(155deg, #f7fcff, #eef2ff 55%, #f5f0ff) !important;
+  background-attachment: fixed !important;
+  font-family: ui-rounded, "Nunito", system-ui, sans-serif !important;
+}
+html[data-skin="jelly"] .sk-panel {
+  background: linear-gradient(165deg, rgba(255, 255, 255, .62), rgba(255, 255, 255, .26)) !important;
+  backdrop-filter: blur(16px) saturate(170%);
+  -webkit-backdrop-filter: blur(16px) saturate(170%);
+  border: 1px solid rgba(255, 255, 255, .9) !important;
+  box-shadow: inset 0 1px 0 #fff, inset 0 -16px 26px rgba(255, 255, 255, .4),
+              0 24px 44px -24px rgba(56, 189, 248, .8) !important;
+}
+html[data-skin="jelly"] .sk-surface {
+  background: linear-gradient(165deg, rgba(255, 255, 255, .55), rgba(255, 255, 255, .28)) !important;
+  border: 1px solid rgba(255, 255, 255, .85) !important;
+  box-shadow: inset 0 1px 0 #fff, inset 0 -10px 18px rgba(255, 255, 255, .35),
+              0 14px 26px -20px rgba(99, 102, 241, .8) !important;
+}
+html[data-skin="jelly"] .sk-chip {
+  border: 1px solid rgba(255, 255, 255, .9) !important;
+  box-shadow: inset 0 2px 4px rgba(255, 255, 255, .8), 0 6px 12px -8px rgba(56, 189, 248, .9) !important;
+}
+html[data-skin="jelly"] .sk-tint {
+  background: rgba(255, 255, 255, .3) !important;
+  box-shadow: inset 0 2px 0 rgba(255, 255, 255, .8), inset 0 -10px 18px rgba(196, 181, 253, .35) !important;
+}
+html[data-skin="jelly"] .sk-banner { background: rgba(255, 255, 255, .78) !important; border: 1px solid #fff !important; }
+html[data-skin="jelly"] .sk-field {
+  background: rgba(255, 255, 255, .62) !important;
+  border: 1px solid rgba(255, 255, 255, .95) !important;
+  box-shadow: inset 0 2px 6px rgba(148, 163, 184, .25), inset 0 -3px 0 rgba(255, 255, 255, .9) !important;
+}
+html[data-skin="jelly"] .sk-btn {
+  box-shadow: inset 0 3px 0 rgba(255, 255, 255, .75), inset 0 -4px 8px rgba(0, 0, 0, .08),
+              0 20px 30px -18px rgba(99, 102, 241, .9) !important;
+}
+html[data-skin="jelly"] .sk-btn:active { transform: translateY(2px) scale(.995); }
+html[data-skin="jelly"] .sk-overlay { background: rgba(49, 46, 129, .3) !important; backdrop-filter: blur(7px); }
+
+/* ============================================================
+   TOY 3D — plastik mainan, bevel tebal
+   ============================================================ */
+html[data-skin="toy3d"] body { background: #fff3d6 !important; }
+html[data-skin="toy3d"] .sk-page {
+  background:
+    radial-gradient(circle at 12% 12%, rgba(255, 209, 102, .55) 0 30px, transparent 31px),
+    radial-gradient(circle at 88% 20%, rgba(125, 211, 252, .5) 0 22px, transparent 23px),
+    radial-gradient(circle at 78% 92%, rgba(251, 207, 232, .55) 0 26px, transparent 27px),
+    linear-gradient(160deg, #fffdf6, #ffeecb) !important;
+  background-attachment: fixed !important;
+  font-family: ui-rounded, "Nunito", system-ui, sans-serif !important;
+}
+html[data-skin="toy3d"] .sk-panel {
+  background: linear-gradient(180deg, #ffffff, #f6f9ff) !important;
+  border: 2px solid #ffffff !important;
+  box-shadow:
+    inset 0 6px 0 rgba(255, 255, 255, .98),
+    inset 0 -8px 0 rgba(15, 23, 42, .07),
+    0 10px 0 -1px #dfe6f7,
+    0 24px 36px -22px rgba(30, 41, 59, .5) !important;
+}
+html[data-skin="toy3d"] .sk-surface {
+  background: linear-gradient(180deg, #ffffff, #f8fbff) !important;
+  border: 1px solid #ffffff !important;
+  box-shadow:
+    inset 0 4px 0 rgba(255, 255, 255, .95),
+    inset 0 -6px 0 rgba(15, 23, 42, .06),
+    0 6px 0 -1px #e6ecfa,
+    0 16px 26px -20px rgba(30, 41, 59, .55) !important;
+}
+html[data-skin="toy3d"] .sk-chip {
+  border: 1px solid rgba(255, 255, 255, .95) !important;
+  box-shadow: inset 0 3px 0 rgba(255, 255, 255, .85), 0 4px 0 -1px rgba(15, 23, 42, .08),
+              0 8px 12px -8px rgba(30, 41, 59, .5) !important;
+}
+html[data-skin="toy3d"] .sk-tint { box-shadow: inset 0 4px 0 rgba(255, 255, 255, .9), inset 0 -6px 0 rgba(15, 23, 42, .05) !important; }
+html[data-skin="toy3d"] .sk-banner { background: #ffffff !important; border: 2px solid #fff !important; box-shadow: 0 8px 0 -2px #e6ecfa !important; }
+html[data-skin="toy3d"] .sk-field {
+  background: #f4f8ff !important;
+  border: 2px solid #ffffff !important;
+  box-shadow: inset 0 4px 8px rgba(148, 163, 184, .35), inset 0 -2px 0 rgba(255, 255, 255, .9) !important;
+}
+html[data-skin="toy3d"] .sk-btn {
+  box-shadow: inset 0 4px 0 rgba(255, 255, 255, .7), inset 0 -5px 0 rgba(0, 0, 0, .12),
+              0 7px 0 -1px rgba(15, 23, 42, .18), 0 18px 26px -18px rgba(30, 41, 59, .7) !important;
+}
+html[data-skin="toy3d"] .sk-btn:active { transform: translateY(4px); box-shadow: inset 0 3px 6px rgba(0, 0, 0, .18) !important; }
+html[data-skin="toy3d"] .sk-overlay { background: rgba(120, 53, 15, .28) !important; backdrop-filter: blur(4px); }
+
+/* ============================================================
+   PUFFY — super membulat, empuk
+   ============================================================ */
+html[data-skin="puffy"] body { background: #fdeef8 !important; }
+html[data-skin="puffy"] .sk-page {
+  background:
+    radial-gradient(34% 30% at 10% 6%, rgba(255, 228, 243, .9), transparent 72%),
+    radial-gradient(32% 28% at 90% 10%, rgba(224, 231, 255, .9), transparent 72%),
+    radial-gradient(34% 30% at 78% 94%, rgba(207, 250, 254, .85), transparent 72%),
+    linear-gradient(155deg, #fff6fb, #f4f2ff 55%, #eefbff) !important;
+  background-attachment: fixed !important;
+  font-family: ui-rounded, "Nunito", "SF Pro Rounded", system-ui, sans-serif !important;
+}
+html[data-skin="puffy"] .sk-panel {
+  background: linear-gradient(170deg, #ffffff, #f8f5ff) !important;
+  border: none !important;
+  box-shadow:
+    inset 0 14px 26px rgba(255, 255, 255, .95),
+    inset 0 -16px 28px rgba(196, 181, 253, .35),
+    0 26px 44px -22px rgba(167, 139, 250, .55),
+    0 10px 18px -10px rgba(236, 72, 153, .3) !important;
+}
+html[data-skin="puffy"] .sk-surface {
+  background: linear-gradient(170deg, #ffffff, #f9f6ff) !important;
+  border: none !important;
+  box-shadow:
+    inset 0 10px 18px rgba(255, 255, 255, .95),
+    inset 0 -12px 20px rgba(196, 181, 253, .32),
+    0 18px 30px -20px rgba(167, 139, 250, .7) !important;
+}
+html[data-skin="puffy"] .sk-chip {
+  border: none !important;
+  box-shadow: inset 0 4px 8px rgba(255, 255, 255, .9), inset 0 -5px 10px rgba(196, 181, 253, .4),
+              0 8px 14px -10px rgba(167, 139, 250, .9) !important;
+}
+html[data-skin="puffy"] .sk-tint { box-shadow: inset 0 8px 16px rgba(255, 255, 255, .85), inset 0 -10px 18px rgba(196, 181, 253, .3) !important; }
+html[data-skin="puffy"] .sk-banner { background: #fdf8ff !important; border: none !important; box-shadow: 0 14px 26px -20px rgba(167, 139, 250, .9) !important; }
+html[data-skin="puffy"] .sk-field {
+  background: #faf7ff !important;
+  border: none !important;
+  box-shadow: inset 0 6px 12px rgba(196, 181, 253, .45), inset 0 -6px 12px rgba(255, 255, 255, .95) !important;
+}
+html[data-skin="puffy"] .sk-btn {
+  box-shadow: inset 0 5px 0 rgba(255, 255, 255, .75), inset 0 -6px 12px rgba(167, 139, 250, .3),
+              0 18px 28px -18px rgba(167, 139, 250, .9) !important;
+}
+html[data-skin="puffy"] .sk-btn:active { transform: translateY(3px) scale(.99); }
+html[data-skin="puffy"] .sk-overlay { background: rgba(109, 40, 217, .25) !important; backdrop-filter: blur(7px); }
+
+/* ============================================================
+   STICKER 3D — kartu seperti tempelan stiker
+   ============================================================ */
+html[data-skin="sticker"] body { background: #fff7fb !important; }
+html[data-skin="sticker"] .sk-page {
+  background:
+    radial-gradient(circle at 10% 14%, rgba(251, 207, 232, .8) 0 16px, transparent 17px),
+    radial-gradient(circle at 84% 10%, rgba(187, 247, 208, .8) 0 12px, transparent 13px),
+    radial-gradient(circle at 66% 88%, rgba(191, 219, 254, .8) 0 14px, transparent 15px),
+    radial-gradient(circle at 24% 78%, rgba(253, 230, 138, .8) 0 10px, transparent 11px),
+    linear-gradient(160deg, #fffaff, #fdf1ff) !important;
+  background-attachment: fixed !important;
+  font-family: ui-rounded, "Nunito", system-ui, sans-serif !important;
+}
+html[data-skin="sticker"] .sk-panel {
+  background: #ffffff !important;
+  border: 5px solid #ffffff !important;
+  box-shadow: 0 0 0 2px rgba(15, 23, 42, .07), 0 20px 30px -18px rgba(236, 72, 153, .55),
+              inset 0 -8px 14px rgba(236, 72, 153, .08) !important;
+}
+html[data-skin="sticker"] .sk-surface {
+  background: #ffffff !important;
+  border: 4px solid #ffffff !important;
+  box-shadow: 0 0 0 1px rgba(15, 23, 42, .06), 0 12px 22px -16px rgba(139, 92, 246, .7) !important;
+}
+html[data-skin="sticker"] .sk-chip {
+  border: 3px solid #ffffff !important;
+  box-shadow: 0 0 0 1px rgba(15, 23, 42, .06), 0 8px 14px -10px rgba(236, 72, 153, .9) !important;
+}
+html[data-skin="sticker"] .sk-tint { box-shadow: inset 0 -6px 14px rgba(236, 72, 153, .08) !important; }
+html[data-skin="sticker"] .sk-banner { background: #fff !important; border: 4px solid #fff !important; box-shadow: 0 0 0 1px rgba(15, 23, 42, .06) !important; }
+html[data-skin="sticker"] .sk-field {
+  background: #fff !important;
+  border: 3px solid #fff !important;
+  box-shadow: 0 0 0 2px rgba(236, 72, 153, .25), inset 0 2px 6px rgba(148, 163, 184, .2) !important;
+}
+html[data-skin="sticker"] .sk-btn {
+  border: 3px solid #fff !important;
+  box-shadow: 0 0 0 2px rgba(15, 23, 42, .08), 0 10px 18px -12px rgba(139, 92, 246, .9) !important;
+}
+html[data-skin="sticker"] .sk-btn:active { transform: translateY(2px); }
+html[data-skin="sticker"] .sk-overlay { background: rgba(88, 28, 135, .3) !important; backdrop-filter: blur(5px); }
+
+/* ============================================================
+   GALAXY 3D — bola bercahaya di luar angkasa
+   ============================================================ */
+html[data-skin="galaxy"] {
+  --sk-fg: #eaf2ff;
+  --sk-fg-dim: rgba(190, 210, 255, .72);
+  --sk-panel-bg: #0e1533;
+  --sk-panel-fg: #eaf2ff;
+  --sk-panel-border: rgba(129, 140, 248, .45);
+  --sk-panel-soft: rgba(129, 140, 248, .14);
+  --sk-panel-accent: #818cf8;
+  --sk-panel-shadow: 0 26px 60px -22px rgba(79, 70, 229, .9);
+}
+html[data-skin="galaxy"] body { background: #070b1e !important; }
+html[data-skin="galaxy"] .sk-page {
+  background:
+    radial-gradient(circle at 12% 18%, rgba(255, 255, 255, .9) 0 1px, transparent 1.6px) 0 0 / 140px 140px,
+    radial-gradient(circle at 72% 62%, rgba(255, 255, 255, .7) 0 1px, transparent 1.6px) 0 0 / 190px 190px,
+    radial-gradient(45% 35% at 20% 0%, rgba(99, 102, 241, .5), transparent 70%),
+    radial-gradient(45% 35% at 90% 12%, rgba(34, 211, 238, .35), transparent 70%),
+    radial-gradient(55% 45% at 50% 100%, rgba(168, 85, 247, .45), transparent 72%),
+    #070b1e !important;
+  background-attachment: fixed !important;
+}
+html[data-skin="galaxy"] .sk-panel {
+  background:
+    radial-gradient(120% 90% at 18% 0%, rgba(129, 140, 248, .3), rgba(11, 16, 40, .95) 65%) !important;
+  border: 1px solid rgba(129, 140, 248, .45) !important;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, .14), 0 0 40px -12px rgba(99, 102, 241, .9),
+              0 30px 60px -30px rgba(0, 0, 0, .95) !important;
+}
+html[data-skin="galaxy"] .sk-surface {
+  background: linear-gradient(160deg, rgba(24, 32, 70, .92), rgba(10, 14, 38, .95)) !important;
+  border: 1px solid rgba(129, 140, 248, .3) !important;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, .1), 0 0 20px -8px rgba(34, 211, 238, .7) !important;
+}
+html[data-skin="galaxy"] .sk-chip {
+  border: 1px solid rgba(148, 163, 255, .4) !important;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, .2), 0 0 14px -4px rgba(129, 140, 248, .9) !important;
+}
+html[data-skin="galaxy"] .sk-tint {
+  background: linear-gradient(120deg, rgba(99, 102, 241, .26), rgba(34, 211, 238, .18)) !important;
+  border: 1px solid rgba(129, 140, 248, .3) !important;
+}
+html[data-skin="galaxy"] .sk-banner { background: #eef3ff !important; border: 1px solid rgba(129, 140, 248, .5) !important; }
+html[data-skin="galaxy"] .sk-field {
+  background: rgba(8, 12, 32, .95) !important;
+  border: 1px solid rgba(129, 140, 248, .45) !important;
+  box-shadow: inset 0 0 16px rgba(99, 102, 241, .25) !important;
+}
+html[data-skin="galaxy"] .sk-btn {
+  box-shadow: inset 0 2px 0 rgba(255, 255, 255, .16), 0 0 24px -8px rgba(129, 140, 248, .95),
+              0 14px 24px -18px rgba(0, 0, 0, .9) !important;
+}
+html[data-skin="galaxy"] .sk-btn-dark { background: linear-gradient(135deg, #6366f1, #22d3ee) !important; color: #05081a !important; }
+html[data-skin="galaxy"] .sk-btn-soft {
+  background: rgba(129, 140, 248, .14) !important;
+  color: rgba(214, 226, 255, .88) !important;
+  border: 1px solid rgba(129, 140, 248, .35) !important;
+  box-shadow: none !important;
+}
+html[data-skin="galaxy"] .sk-overlay { background: rgba(4, 6, 18, .8) !important; backdrop-filter: blur(8px); }
+
+/* ============================================================
+   SKALA SUDUT — batch 3
+   ============================================================ */
+html[data-skin="bubble"] .sk-r-s { border-radius: 18px !important; }
+html[data-skin="bubble"] .sk-r-m { border-radius: 24px !important; }
+html[data-skin="bubble"] .sk-r-l { border-radius: 30px !important; }
+html[data-skin="bubble"] .sk-r-xl { border-radius: 38px !important; }
+
+html[data-skin="jelly"] .sk-r-s { border-radius: 16px !important; }
+html[data-skin="jelly"] .sk-r-m { border-radius: 22px !important; }
+html[data-skin="jelly"] .sk-r-l { border-radius: 28px !important; }
+html[data-skin="jelly"] .sk-r-xl { border-radius: 34px !important; }
+
+html[data-skin="toy3d"] .sk-r-s { border-radius: 10px !important; }
+html[data-skin="toy3d"] .sk-r-m { border-radius: 14px !important; }
+html[data-skin="toy3d"] .sk-r-l { border-radius: 18px !important; }
+html[data-skin="toy3d"] .sk-r-xl { border-radius: 22px !important; }
+
+html[data-skin="puffy"] .sk-r-s { border-radius: 24px !important; }
+html[data-skin="puffy"] .sk-r-m { border-radius: 30px !important; }
+html[data-skin="puffy"] .sk-r-l { border-radius: 38px !important; }
+html[data-skin="puffy"] .sk-r-xl { border-radius: 46px !important; }
+
+html[data-skin="sticker"] .sk-r-s { border-radius: 12px !important; }
+html[data-skin="sticker"] .sk-r-m { border-radius: 16px !important; }
+html[data-skin="sticker"] .sk-r-l { border-radius: 20px !important; }
+html[data-skin="sticker"] .sk-r-xl { border-radius: 26px !important; }
+
+html[data-skin="galaxy"] .sk-r-s { border-radius: 12px !important; }
+html[data-skin="galaxy"] .sk-r-m { border-radius: 18px !important; }
+html[data-skin="galaxy"] .sk-r-l { border-radius: 24px !important; }
+html[data-skin="galaxy"] .sk-r-xl { border-radius: 30px !important; }
+
+/* ============================================================
+   CUSTOM BEBAS — semua nilai datang dari panel admin (CSS var)
+   ============================================================ */
+html[data-skin="custom"] body {
+  background: var(--cu-bg, #f2f6fc) !important;
+  font-family: var(--cu-font, system-ui, -apple-system, "Segoe UI", Roboto, sans-serif) !important;
+}
+html[data-skin="custom"] #root { zoom: var(--cu-zoom, 1); }
+html[data-skin="custom"] .sk-page {
+  background: var(--cu-bg-layer, #f2f6fc) !important;
+  background-attachment: fixed !important;
+  transition: none !important;
+}
+html[data-skin="custom"] .sk-panel {
+  background: var(--cu-surface, #ffffff) !important;
+  border: var(--cu-bw, 1px) solid var(--cu-border, #dbe3f0) !important;
+  box-shadow: var(--cu-shadow-panel, none) !important;
+  color: var(--cu-text, #0f172a) !important;
+}
+html[data-skin="custom"] .sk-surface {
+  background: var(--cu-surface, #ffffff) !important;
+  border: var(--cu-bw, 1px) solid var(--cu-border, #dbe3f0) !important;
+  box-shadow: var(--cu-shadow-surface, none) !important;
+  color: var(--cu-text, #0f172a) !important;
+}
+html[data-skin="custom"] .sk-chip {
+  border: var(--cu-bw, 1px) solid var(--cu-border, #dbe3f0) !important;
+  box-shadow: var(--cu-shadow-chip, none) !important;
+}
+html[data-skin="custom"] .sk-tint {
+  background: var(--cu-tint, rgba(99, 102, 241, .12)) !important;
+  border: var(--cu-bw, 1px) solid var(--cu-border, #dbe3f0) !important;
+  box-shadow: none !important;
+  color: var(--cu-text, #0f172a) !important;
+}
+html[data-skin="custom"] .sk-banner {
+  background: var(--cu-banner, #ffffff) !important;
+  border: var(--cu-bw, 1px) solid var(--cu-border, #dbe3f0) !important;
+  box-shadow: var(--cu-shadow-surface, none) !important;
+}
+html[data-skin="custom"] .sk-field {
+  background: var(--cu-field, #ffffff) !important;
+  border: var(--cu-bw, 1px) solid var(--cu-border, #dbe3f0) !important;
+  color: var(--cu-text, #0f172a) !important;
+  box-shadow: none !important;
+}
+html[data-skin="custom"] .sk-field::placeholder { color: var(--cu-text-dim, #64748b) !important; }
+html[data-skin="custom"] .sk-btn { box-shadow: var(--cu-shadow-btn, none) !important; }
+html[data-skin="custom"] .sk-btn:active { transform: translateY(2px); }
+html[data-skin="custom"] .sk-txt { color: var(--cu-text, #0f172a) !important; }
+html[data-skin="custom"] .sk-txt-muted { color: var(--cu-text-dim, #64748b) !important; }
+html[data-skin="custom"] .sk-btn .sk-txt,
+html[data-skin="custom"] .sk-btn .sk-txt-muted,
+html[data-skin="custom"] .sk-chip .sk-txt,
+html[data-skin="custom"] .sk-chip .sk-txt-muted,
+html[data-skin="custom"] .sk-accent .sk-txt,
+html[data-skin="custom"] .sk-accent .sk-txt-muted,
+html[data-skin="custom"] .sk-banner .sk-txt,
+html[data-skin="custom"] .sk-banner .sk-txt-muted { color: inherit !important; }
+html[data-skin="custom"] .sk-overlay { background: var(--cu-overlay, rgba(0, 0, 0, .32)) !important; backdrop-filter: blur(5px); }
+
+/* pilihan tombol seragam */
+html[data-skin="custom"][data-btn="accent"] .sk-btn {
+  background: var(--cu-accent, #6366f1) !important;
+  color: var(--cu-accent-text, #ffffff) !important;
+  border: var(--cu-bw, 1px) solid var(--cu-border, #dbe3f0) !important;
+}
+html[data-skin="custom"][data-btn="accent"] .sk-btn .sk-txt,
+html[data-skin="custom"][data-btn="accent"] .sk-btn .sk-txt-muted { color: inherit !important; }
+html[data-skin="custom"][data-btn="accent"] .sk-btn-soft {
+  background: var(--cu-soft, rgba(99, 102, 241, .14)) !important;
+  color: var(--cu-text, #0f172a) !important;
+}
+
+/* efek kaca */
+html[data-skin="custom"][data-glass="on"] .sk-panel,
+html[data-skin="custom"][data-glass="on"] .sk-surface,
+html[data-skin="custom"][data-glass="on"] .sk-banner {
+  backdrop-filter: blur(16px) saturate(160%);
+  -webkit-backdrop-filter: blur(16px) saturate(160%);
+}
+
+/* skala sudut */
+html[data-skin="custom"] .sk-r-s { border-radius: var(--cu-r-s, 12px) !important; }
+html[data-skin="custom"] .sk-r-m { border-radius: var(--cu-r-m, 18px) !important; }
+html[data-skin="custom"] .sk-r-l { border-radius: var(--cu-r-l, 22px) !important; }
+html[data-skin="custom"] .sk-r-xl { border-radius: var(--cu-r-xl, 28px) !important; }
+html[data-skin="custom"] .sk-pill { border-radius: 999px !important; }
+
+/* ============================================================
+   KONTROL PANEL ADMIN (warna, angka, pilihan)
+   ============================================================ */
+.sk-admin-panel { overflow-x: hidden; }
+.sk-admin-panel, .sk-admin-panel * { box-sizing: border-box; }
+.sk-settings { margin-top: 12px; padding-top: 10px; border-top: 1px dashed var(--sk-panel-border); }
+.sk-presets { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 4px; }
+.sk-preset {
+  padding: 6px 10px; border-radius: 999px; border: 1px solid var(--sk-panel-border);
+  background: var(--sk-panel-soft); color: inherit; font: inherit; font-size: 10.5px; font-weight: 800;
+  cursor: pointer; transition: transform .12s ease, border-color .12s ease;
+}
+.sk-preset:hover { transform: translateY(-1px); border-color: var(--sk-panel-accent); }
+.sk-preset-reset { width: 100%; margin-top: 12px; border-style: dashed; }
+.sk-ctl { margin-top: 9px; }
+.sk-ctl-row { display: flex; align-items: center; justify-content: space-between; gap: 10px; margin-top: 9px; }
+.sk-ctl-label { font-size: 10.5px; font-weight: 800; letter-spacing: .02em; opacity: .68; }
+.sk-ctl-val { font-size: 10.5px; font-weight: 800; opacity: .55; }
+.sk-ctl-colors { display: flex; align-items: center; gap: 6px; }
+.sk-color {
+  width: 38px; height: 26px; padding: 0; border: 1px solid var(--sk-panel-border);
+  border-radius: 8px; background: transparent; cursor: pointer;
+}
+.sk-color::-webkit-color-swatch-wrapper { padding: 2px; }
+.sk-color::-webkit-color-swatch { border: none; border-radius: 6px; }
+.sk-hex { font-size: 10px; font-weight: 800; opacity: .55; min-width: 56px; text-align: right; letter-spacing: .02em; }
+.sk-select {
+  width: 100%; height: 30px; margin-top: 4px; padding: 0 8px; border-radius: 9px;
+  border: 1px solid var(--sk-panel-border); background: var(--sk-panel-soft); color: inherit;
+  font: inherit; font-size: 11px; font-weight: 700; cursor: pointer;
+}
+.sk-select option { background: var(--sk-panel-bg); color: var(--sk-panel-fg); }
+.sk-range { width: 100%; margin-top: 6px; accent-color: var(--sk-panel-accent); cursor: pointer; }
+.sk-ctl-toggle { cursor: pointer; }
+.sk-ctl-toggle input { width: 18px; height: 18px; accent-color: var(--sk-panel-accent); cursor: pointer; }
+
+</style>
 </head>
 <body>
   <div id="root"></div>
+<script id="skin-engine">
+/* ============================================================
+   SKIN ENGINE v1 — pemilih tema + pengecat tampilan
+   Admin memilih tema; semua perangkat siswa otomatis mengikuti.
+   Tema "default" = tampilan asli (tidak mengecat apa pun).
+   ============================================================ */
+(function () {
+  "use strict";
+
+  var THEMES = [
+    { id: "default",   name: "Default", desc: "Tampilan asli", preview: "linear-gradient(135deg,#ffffff,#e9eef5)", tone: "light" },
+    { id: "custom",    name: "Custom Bebas", desc: "Atur sendiri", preview: "conic-gradient(from 210deg,#f472b6,#a78bfa,#38bdf8,#34d399,#fbbf24,#f472b6)", tone: "light" },
+    { id: "clay",      name: "Claymorphism", desc: "Empuk & pastel", preview: "linear-gradient(135deg,#f7f9fd,#dfe6f2)", tone: "light" },
+    { id: "glass",     name: "Glassmorphism", desc: "Bening & blur", preview: "linear-gradient(135deg,#c7d2fe,#a5f3fc 55%,#fbcfe8)", tone: "light" },
+    { id: "neo",       name: "Neumorphism", desc: "Timbul halus", preview: "linear-gradient(135deg,#f2f5fa,#d5dce7)", tone: "light" },
+    { id: "lego",      name: "Legomorphism", desc: "Balok mainan", preview: "linear-gradient(135deg,#ffd166,#ef476f 55%,#118ab2)", tone: "light" },
+    { id: "aurora",    name: "Aurora", desc: "Gradien senja", preview: "linear-gradient(135deg,#a78bfa,#f0abfc 55%,#67e8f9)", tone: "light" },
+    { id: "sakura",    name: "Sakura", desc: "Lembut pink", preview: "linear-gradient(135deg,#fff1f5,#ffd6e2 55%,#f9a8d4)", tone: "light" },
+    { id: "mint",      name: "Mint Fresh", desc: "Segar hijau", preview: "linear-gradient(135deg,#eafff5,#a7f3d0 55%,#34d399)", tone: "light" },
+    { id: "sunset",    name: "Sunset", desc: "Hangat jingga", preview: "linear-gradient(135deg,#fff3e0,#fdba74 55%,#f97316)", tone: "light" },
+    { id: "candy",     name: "Candy Gloss", desc: "Mengkilap manis", preview: "linear-gradient(135deg,#ffe6f7,#e8e6ff 55%,#a5f3fc)", tone: "light" },
+    { id: "retro",     name: "Retro 90s", desc: "Memphis warna", preview: "linear-gradient(135deg,#a7f3d0,#fda4af 55%,#38bdf8)", tone: "light" },
+    { id: "brutalism", name: "Brutalism", desc: "Garis tebal keras", preview: "linear-gradient(135deg,#fff8d6,#ffd166 60%,#111)", tone: "light" },
+    { id: "mono",      name: "Mono Paper", desc: "Hitam putih", preview: "linear-gradient(135deg,#ffffff,#d4d4d4 55%,#404040)", tone: "light" },
+    { id: "neon",      name: "Neonmorphism", desc: "Gelap & menyala", preview: "linear-gradient(135deg,#0b1022,#1e293b 55%,#22d3ee)", tone: "dark" },
+    { id: "cyberpunk", name: "Cyberpunk", desc: "Magenta & cyan", preview: "linear-gradient(135deg,#0a0616,#ff2d95 60%,#22d3ee)", tone: "dark" },
+    { id: "vaporwave", name: "Vaporwave", desc: "Senja ungu-pink", preview: "linear-gradient(135deg,#3b1054,#ff71ce 55%,#01cdfe)", tone: "dark" },
+    { id: "midnight",  name: "Midnight Gold", desc: "Gelap & emas", preview: "linear-gradient(135deg,#0a0d16,#1b2437 55%,#d4af37)", tone: "dark" },
+    { id: "blueprint", name: "Blueprint", desc: "Teknis biru", preview: "linear-gradient(135deg,#0d3b66,#1d6fa5 55%,#dbeafe)", tone: "dark" },
+    { id: "pixel",     name: "Pixel 8-bit", desc: "Terminal hijau", preview: "linear-gradient(135deg,#06120a,#14532d 55%,#22c55e)", tone: "dark" },
+    { id: "bubble",  name: "Bubble 3D", desc: "Gelembung glossy", preview: "linear-gradient(135deg,#ffffff,#ffb3e6 50%,#93c5fd)", tone: "light" },
+    { id: "jelly",   name: "Jelly 3D", desc: "Bening kenyal", preview: "linear-gradient(135deg,#a5f3fc,#c4b5fd 55%,#fbcfe8)", tone: "light" },
+    { id: "toy3d",   name: "Toy 3D", desc: "Plastik kilap", preview: "linear-gradient(135deg,#fff2c4,#ffd166 55%,#7dd3fc)", tone: "light" },
+    { id: "puffy",   name: "Puffy", desc: "Empuk membulat", preview: "linear-gradient(135deg,#ffe4f3,#e0e7ff 55%,#cffafe)", tone: "light" },
+    { id: "sticker", name: "Sticker 3D", desc: "Tempelan lucu", preview: "linear-gradient(135deg,#ffffff,#fbcfe8 45%,#bbf7d0)", tone: "light" },
+    { id: "galaxy",  name: "Galaxy 3D", desc: "Bola luar angkasa", preview: "linear-gradient(135deg,#0b1030,#4338ca 50%,#22d3ee)", tone: "dark" }
+  ];
+  var IDS = THEMES.map(function (t) { return t.id; });
+  var DAILY_POOL = THEMES.filter(function (t) { return t.id !== "default" && t.id !== "custom"; }).map(function (t) { return t.id; });
+  var DEFAULT_CFG = { skin: "default", mode: "fixed" };
+
+  /* ---------- custom bebas ---------- */
+  var FONTS = {
+    system: 'system-ui, -apple-system, "Segoe UI", Roboto, Arial, sans-serif',
+    rounded: 'ui-rounded, "Nunito", "SF Pro Rounded", "Segoe UI", system-ui, sans-serif',
+    serif: 'Georgia, "Times New Roman", "Noto Serif", serif',
+    mono: 'ui-monospace, "SFMono-Regular", Consolas, "Courier New", monospace',
+    narrow: '"Arial Narrow", "Roboto Condensed", "Helvetica Neue", system-ui, sans-serif'
+  };
+  var DEFAULT_CUSTOM = {
+    bg: "#f2f6fc", bg2: "#e3ebff", bgStyle: "gradient",
+    surface: "#ffffff", surfaceAlpha: 1,
+    text: "#0f172a", textDim: "#64748b",
+    accent: "#6366f1", accentText: "#ffffff",
+    border: "#dbe3f0", borderWidth: 1,
+    radius: 18, shadow: "soft", font: "system", zoom: 100,
+    glass: false, buttonStyle: "auto"
+  };
+  var PRESETS = [
+    { id: "bersih", name: "Bersih", values: { bg: "#f2f6fc", bg2: "#e3ebff", bgStyle: "gradient", surface: "#ffffff", surfaceAlpha: 1, text: "#0f172a", textDim: "#64748b", accent: "#6366f1", accentText: "#ffffff", border: "#dbe3f0", borderWidth: 1, radius: 18, shadow: "soft", font: "system", zoom: 100, glass: false, buttonStyle: "auto" } },
+    { id: "gelap", name: "Gelap", values: { bg: "#0b1020", bg2: "#141d38", bgStyle: "mesh", surface: "#151d33", surfaceAlpha: 1, text: "#eaf0ff", textDim: "#9fb0d0", accent: "#38bdf8", accentText: "#04121f", border: "#26314f", borderWidth: 1, radius: 16, shadow: "strong", font: "system", zoom: 100, glass: false, buttonStyle: "accent" } },
+    { id: "pastel", name: "Pastel Lucu", values: { bg: "#fff5fb", bg2: "#e8f6ff", bgStyle: "dots", surface: "#ffffff", surfaceAlpha: 1, text: "#3b2f44", textDim: "#8b7f95", accent: "#f472b6", accentText: "#ffffff", border: "#ffd9ea", borderWidth: 1, radius: 30, shadow: "float", font: "rounded", zoom: 100, glass: false, buttonStyle: "auto" } },
+    { id: "gelembung", name: "Gelembung", values: { bg: "#eef4ff", bg2: "#ffe9f7", bgStyle: "mesh", surface: "#ffffff", surfaceAlpha: 1, text: "#1e293b", textDim: "#64748b", accent: "#8b5cf6", accentText: "#ffffff", border: "#ffffff", borderWidth: 1, radius: 34, shadow: "float", font: "rounded", zoom: 100, glass: false, buttonStyle: "auto" } },
+    { id: "neon", name: "Neon", values: { bg: "#070b18", bg2: "#0f1b3a", bgStyle: "grid", surface: "#0f1730", surfaceAlpha: 1, text: "#e6f4ff", textDim: "#8fb6d9", accent: "#22d3ee", accentText: "#04121f", border: "#1e3a5f", borderWidth: 1, radius: 12, shadow: "glow", font: "system", zoom: 100, glass: false, buttonStyle: "accent" } },
+    { id: "minimal", name: "Minimal", values: { bg: "#f5f5f5", bg2: "#ffffff", bgStyle: "solid", surface: "#ffffff", surfaceAlpha: 1, text: "#111111", textDim: "#6b7280", accent: "#111111", accentText: "#ffffff", border: "#e2e2e2", borderWidth: 1, radius: 6, shadow: "none", font: "system", zoom: 100, glass: false, buttonStyle: "auto" } },
+    { id: "kaca", name: "Kaca", values: { bg: "#dbeafe", bg2: "#fbcfe8", bgStyle: "mesh", surface: "#ffffff", surfaceAlpha: 0.55, text: "#0f172a", textDim: "#475569", accent: "#2563eb", accentText: "#ffffff", border: "#ffffff", borderWidth: 1, radius: 24, shadow: "soft", font: "system", zoom: 100, glass: true, buttonStyle: "auto" } }
+  ];
+
+  function hexToRgb(hex) {
+    var h = String(hex || "").replace("#", "").trim();
+    if (h.length === 3) h = h.charAt(0) + h.charAt(0) + h.charAt(1) + h.charAt(1) + h.charAt(2) + h.charAt(2);
+    if (h.length !== 6 || /[^0-9a-f]/i.test(h)) return { r: 15, g: 23, b: 42 };
+    return { r: parseInt(h.slice(0, 2), 16), g: parseInt(h.slice(2, 4), 16), b: parseInt(h.slice(4, 6), 16) };
+  }
+  function rgbaOf(hex, a) { var c = hexToRgb(hex); return "rgba(" + c.r + "," + c.g + "," + c.b + "," + a + ")"; }
+  function shade(hex, t) {
+    var c = hexToRgb(hex);
+    function f(v) { return Math.max(0, Math.min(255, Math.round(v + (t > 0 ? (255 - v) * t : v * t)))); }
+    function p(v) { var s = v.toString(16); return s.length === 1 ? "0" + s : s; }
+    return "#" + p(f(c.r)) + p(f(c.g)) + p(f(c.b));
+  }
+  function buildBgLayer(c) {
+    var line = rgbaOf(c.text, 0.09);
+    if (c.bgStyle === "solid") return c.bg;
+    if (c.bgStyle === "grid") {
+      return "linear-gradient(" + line + " 1px, transparent 1px) 0 0/28px 28px,"
+        + "linear-gradient(90deg," + line + " 1px, transparent 1px) 0 0/28px 28px," + c.bg;
+    }
+    if (c.bgStyle === "dots") {
+      return "radial-gradient(" + rgbaOf(c.text, 0.13) + " 2px, transparent 2.6px) 0 0/24px 24px," + c.bg;
+    }
+    if (c.bgStyle === "mesh") {
+      return "radial-gradient(45% 35% at 8% 0%," + rgbaOf(c.accent, 0.42) + ",transparent 70%),"
+        + "radial-gradient(45% 35% at 95% 8%," + rgbaOf(c.bg2, 0.75) + ",transparent 70%),"
+        + "radial-gradient(55% 45% at 50% 100%," + rgbaOf(c.accent, 0.25) + ",transparent 72%)," + c.bg;
+    }
+    return "linear-gradient(160deg," + c.bg + "," + c.bg2 + ")";
+  }
+  function shadowFor(kind, c, big) {
+    var sc = rgbaOf(c.text, big ? 0.42 : 0.3);
+    if (kind === "none") return "none";
+    if (kind === "strong") return "0 " + (big ? 30 : 18) + "px " + (big ? 54 : 34) + "px -" + (big ? 26 : 20) + "px " + sc;
+    if (kind === "hard") return (big ? 6 : 4) + "px " + (big ? 6 : 4) + "px 0 " + c.border;
+    if (kind === "glow") return "0 0 " + (big ? 34 : 20) + "px -" + (big ? 8 : 6) + "px " + rgbaOf(c.accent, 0.9);
+    if (kind === "float") {
+      return "0 " + (big ? 14 : 8) + "px 0 -" + (big ? 10 : 6) + "px " + rgbaOf(c.border, 0.95)
+        + ",0 " + (big ? 34 : 24) + "px " + (big ? 52 : 36) + "px -" + (big ? 26 : 20) + "px " + sc;
+    }
+    return "0 " + (big ? 18 : 10) + "px " + (big ? 34 : 22) + "px -" + (big ? 22 : 16) + "px " + sc;
+  }
+  function normalizeCustom(raw) {
+    var out = {}, k;
+    for (k in DEFAULT_CUSTOM) out[k] = DEFAULT_CUSTOM[k];
+    if (raw && typeof raw === "object") {
+      for (k in DEFAULT_CUSTOM) {
+        if (!Object.prototype.hasOwnProperty.call(raw, k)) continue;
+        if (raw[k] === undefined || raw[k] === null || raw[k] === "") continue;
+        var dv = DEFAULT_CUSTOM[k];
+        if (typeof dv === "number") { var n = Number(raw[k]); out[k] = isNaN(n) ? dv : n; }
+        else if (typeof dv === "boolean") out[k] = !!raw[k];
+        else out[k] = String(raw[k]);
+      }
+    }
+    out.radius = Math.max(0, Math.min(44, out.radius));
+    out.borderWidth = Math.max(0, Math.min(6, out.borderWidth));
+    out.surfaceAlpha = Math.max(0.35, Math.min(1, out.surfaceAlpha));
+    out.zoom = Math.max(85, Math.min(115, out.zoom));
+    if (["solid", "gradient", "grid", "dots", "mesh"].indexOf(out.bgStyle) < 0) out.bgStyle = "gradient";
+    if (["none", "soft", "strong", "hard", "glow", "float"].indexOf(out.shadow) < 0) out.shadow = "soft";
+    if (!FONTS[out.font]) out.font = "system";
+    if (["auto", "accent"].indexOf(out.buttonStyle) < 0) out.buttonStyle = "auto";
+    return out;
+  }
+  function applyCustomVars() {
+    var c = normalizeCustom(state.cfg.custom);
+    var html = document.documentElement, st = html.style;
+    var surf = c.surfaceAlpha >= 0.999 ? c.surface : rgbaOf(c.surface, c.surfaceAlpha);
+    var field = c.surfaceAlpha >= 0.999 ? shade(c.surface, -0.05) : rgbaOf(c.surface, Math.min(1, c.surfaceAlpha + 0.2));
+    st.setProperty("--cu-bg", c.bg);
+    st.setProperty("--cu-bg-layer", buildBgLayer(c));
+    st.setProperty("--cu-surface", surf);
+    st.setProperty("--cu-field", field);
+    st.setProperty("--cu-text", c.text);
+    st.setProperty("--cu-text-dim", c.textDim);
+    st.setProperty("--cu-border", c.border);
+    st.setProperty("--cu-bw", c.borderWidth + "px");
+    st.setProperty("--cu-accent", c.accent);
+    st.setProperty("--cu-accent-text", c.accentText);
+    st.setProperty("--cu-tint", rgbaOf(c.accent, 0.14));
+    st.setProperty("--cu-banner", shade(c.surface, 0.03));
+    st.setProperty("--cu-soft", rgbaOf(c.accent, 0.16));
+    st.setProperty("--cu-overlay", rgbaOf("#000000", 0.34));
+    st.setProperty("--cu-shadow-panel", shadowFor(c.shadow, c, true));
+    st.setProperty("--cu-shadow-surface", shadowFor(c.shadow, c, false));
+    st.setProperty("--cu-shadow-chip", shadowFor(c.shadow, c, false));
+    st.setProperty("--cu-shadow-btn", shadowFor(c.shadow, c, false));
+    st.setProperty("--cu-r-s", Math.round(c.radius * 0.55) + "px");
+    st.setProperty("--cu-r-m", c.radius + "px");
+    st.setProperty("--cu-r-l", Math.round(c.radius * 1.25) + "px");
+    st.setProperty("--cu-r-xl", Math.round(c.radius * 1.55) + "px");
+    st.setProperty("--cu-font", FONTS[c.font] || FONTS.system);
+    st.setProperty("--cu-zoom", (c.zoom / 100).toFixed(2));
+    html.setAttribute("data-btn", c.buttonStyle === "accent" ? "accent" : "auto");
+    html.setAttribute("data-glass", c.glass ? "on" : "off");
+  }
+
+  var state = { cfg: { skin: "default", mode: "fixed" }, resolved: "default" };
+  var listeners = [];
+  var storageKey = "skin_v1";
+  var db = null, pathFn = null, dbRef = null, dbPath = null;
+  var queue = [], scheduled = false;
+
+  /* ---------------- util ---------------- */
+  function wibDate(offsetDays) {
+    var d = new Date(Date.now() + (offsetDays || 0) * 86400000);
+    try {
+      return new Intl.DateTimeFormat("en-CA", {
+        timeZone: "Asia/Jakarta", year: "numeric", month: "2-digit", day: "2-digit"
+      }).format(d);
+    } catch (e) {
+      return d.getFullYear() + "-" + ("0" + (d.getMonth() + 1)).slice(-2) + "-" + ("0" + d.getDate()).slice(-2);
+    }
+  }
+  function dayIndex(str) {
+    var t = Date.parse(str + "T00:00:00Z");
+    return isNaN(t) ? 0 : Math.floor(t / 86400000);
+  }
+  function skinForDay(str) {
+    var i = ((dayIndex(str) % DAILY_POOL.length) + DAILY_POOL.length) % DAILY_POOL.length;
+    return DAILY_POOL[i];
+  }
+  function normalizeCfg(raw) {
+    var cfg = { skin: DEFAULT_CFG.skin, mode: DEFAULT_CFG.mode, custom: normalizeCustom(null) };
+    if (raw && typeof raw === "object") {
+      if (raw.mode === "daily") cfg.mode = "daily";
+      if (typeof raw.skin === "string" && IDS.indexOf(raw.skin) >= 0) cfg.skin = raw.skin;
+      cfg.custom = normalizeCustom(raw.custom);
+    }
+    return cfg;
+  }
+  function readLocal() {
+    try {
+      var raw = localStorage.getItem(storageKey);
+      if (raw) return normalizeCfg(JSON.parse(raw));
+    } catch (e) {}
+    return null;
+  }
+  function writeLocal(cfg) {
+    try { localStorage.setItem(storageKey, JSON.stringify(cfg)); } catch (e) {}
+  }
+  function resolveSkin(cfg) {
+    return cfg.mode === "daily" ? skinForDay(wibDate(0)) : (IDS.indexOf(cfg.skin) >= 0 ? cfg.skin : "default");
+  }
+  function themeMeta(id) {
+    for (var i = 0; i < THEMES.length; i++) if (THEMES[i].id === id) return THEMES[i];
+    return THEMES[0];
+  }
+
+  /* ---------------- warna ---------------- */
+  var colorCache = {};
+  function parseColor(v) {
+    if (!v) return null;
+    v = String(v).trim().toLowerCase();
+    if (!v || v === "transparent" || v === "none" || v === "inherit" || v === "currentcolor") return null;
+    if (Object.prototype.hasOwnProperty.call(colorCache, v)) return colorCache[v];
+    var out = null, m, hex;
+    if (v.charAt(0) === "#") {
+      hex = v.slice(1);
+      if (hex.length === 3 || hex.length === 4) {
+        hex = hex.split("").map(function (c) { return c + c; }).join("");
+      }
+      if (hex.length !== 6 && hex.length !== 8) hex = null;
+      if (hex) {
+        out = {
+          r: parseInt(hex.slice(0, 2), 16),
+          g: parseInt(hex.slice(2, 4), 16),
+          b: parseInt(hex.slice(4, 6), 16),
+          a: hex.length === 8 ? parseInt(hex.slice(6, 8), 16) / 255 : 1
+        };
+      }
+    } else {
+      m = /^rgba?\(([^)]+)\)/.exec(v);
+      if (m) {
+        var p = m[1].split(/[,\s\/]+/).filter(Boolean);
+        out = { r: +p[0], g: +p[1], b: +p[2], a: p.length > 3 ? parseFloat(p[3]) : 1 };
+      }
+    }
+    if (out && (isNaN(out.r) || isNaN(out.g) || isNaN(out.b))) out = null;
+    colorCache[v] = out;
+    return out;
+  }
+  function lum(c) { return (0.299 * c.r + 0.587 * c.g + 0.114 * c.b) / 255; }
+
+  /* ---------------- pengecat tampilan ---------------- */
+  var OUR_TAGS = ["sk-page", "sk-accent", "sk-banner", "sk-panel", "sk-surface", "sk-chip", "sk-tint", "sk-field", "sk-btn",
+    "sk-btn-soft", "sk-btn-dark", "sk-btn-solid", "sk-btn-pill", "sk-overlay", "sk-txt", "sk-txt-muted",
+    "sk-ghost", "sk-r-s", "sk-r-m", "sk-r-l", "sk-r-xl", "sk-pill"];
+
+  function radiusBucket(r) {
+    if (r >= 100) return ["sk-pill"];
+    if (r >= 24) return ["sk-r-xl"];
+    if (r >= 20) return ["sk-r-l"];
+    if (r >= 13) return ["sk-r-m"];
+    if (r >= 8) return ["sk-r-s"];
+    return [];
+  }
+
+  function tagsFor(el) {
+    var s = el.style;
+    if (!s || !el.getAttribute) return null;
+    var styleAttr = el.getAttribute("style");
+    if (!styleAttr) return null;
+    var tag = el.tagName;
+    var out = [];
+    var radius = parseFloat(s.borderRadius) || 0;
+    var h = parseFloat(s.height) || 0;
+    var minH = parseFloat(s.minHeight) || 0;
+    var minHRaw = s.minHeight || "";
+    var bg = parseColor(s.backgroundColor);
+    var bgImg = (s.backgroundImage || "").trim();
+    var grad = !!bgImg && bgImg !== "none" && bgImg !== "initial" && bgImg !== "inherit" && bgImg.indexOf("gradient") >= 0;
+    var hasBg = !!bg || grad;
+    var shadow = (s.boxShadow || "").trim();
+    var hasShadow = !!shadow && shadow !== "none";
+    var pos = s.position;
+    var opacity = parseFloat(s.opacity);
+    var isField = tag === "INPUT" || tag === "SELECT" || tag === "TEXTAREA";
+    var isBtn = tag === "BUTTON";
+
+    if (/vh/.test(minHRaw) ? /([3-9]\d|100)vh/.test(minHRaw) : minH >= 260) out.push("sk-page");
+
+    if (isField) {
+      if (opacity === 0) return ["sk-ghost"];
+      out.push("sk-field");
+      return out.concat(radiusBucket(radius));
+    }
+
+    if (isBtn) {
+      out.push("sk-btn");
+      if (bg && bg.a > 0.4) {
+        if (lum(bg) < 0.24) out.push("sk-btn-dark");
+        else if (lum(bg) < 0.5) out.push("sk-btn-solid");
+        else if (bg.a < 0.95 && lum(bg) > 0.6) out.push("sk-btn-soft");
+      }
+      if (radius >= 100 || (h > 0 && h <= 32)) out.push("sk-btn-pill");
+      return out.concat(radiusBucket(radius));
+    }
+
+    var fullInset = s.inset === "0px" || (s.top === "0px" && s.left === "0px" && s.right === "0px" && s.bottom === "0px");
+    if (pos === "fixed" && fullInset && bg && bg.a < 0.92 && lum(bg) < 0.4) return ["sk-overlay"];
+
+    var col = parseColor(s.color);
+    var whiteText = !!(col && col.a > 0.5 && lum(col) > 0.78);
+    // elemen berwarna kuat / teks putih / gradien: jangan diwarnai ulang,
+    // cukup diberi sudut + bayangan supaya makna warnanya tidak hilang
+    var accentish = grad || whiteText || !!(bg && bg.a > 0.35 && lum(bg) < 0.74);
+
+    if (hasBg || hasShadow) {
+      var tiny = h > 0 && h < 14;
+      if (radius >= 100) out.push("sk-chip");
+      else if (radius >= 10 && !tiny) {
+        if (accentish) out.push("sk-accent");
+        else if (bg && lum(bg) > 0.8 && col && lum(col) < 0.62) out.push("sk-banner");
+        else out.push(radius >= 24 ? "sk-panel" : "sk-surface");
+      } else if (!tiny) {
+        if (accentish) out.push("sk-accent");
+        else if (col && lum(col) < 0.62) out.push("sk-banner");
+        else out.push("sk-tint");
+      }
+      return out.concat(radiusBucket(radius));
+    }
+
+    col = parseColor(s.color);
+    if (col) {
+      if (col.a < 0.85 || lum(col) > 0.6) out.push("sk-txt-muted");
+      else if (lum(col) < 0.5) out.push("sk-txt");
+    }
+    return out;
+  }
+
+  function paint(el) {
+    if (!el || el.nodeType !== 1 || !el.style) return;
+    if (el.closest && el.closest(".sk-admin-panel")) return;
+    var next = tagsFor(el);
+    var prevAttr = el.getAttribute("data-sk") || "";
+    var prev = prevAttr ? prevAttr.split(" ") : [];
+    var i, t;
+    if (!next) {
+      if (!prev.length) return;
+      next = [];
+    }
+    for (i = 0; i < prev.length; i++) {
+      t = prev[i];
+      if (next.indexOf(t) < 0 && OUR_TAGS.indexOf(t) >= 0) el.classList.remove(t);
+    }
+    for (i = 0; i < next.length; i++) {
+      t = next[i];
+      if (prev.indexOf(t) < 0) el.classList.add(t);
+    }
+    var joined = next.join(" ");
+    if (joined !== prevAttr) {
+      if (joined) el.setAttribute("data-sk", joined);
+      else el.removeAttribute("data-sk");
+    }
+  }
+
+  function paintTree(root) {
+    if (!root || root.nodeType !== 1) return;
+    paint(root);
+    var all = root.querySelectorAll ? root.querySelectorAll("*") : [];
+    for (var i = 0; i < all.length; i++) paint(all[i]);
+  }
+
+  function flush() {
+    scheduled = false;
+    var list = queue;
+    queue = [];
+    for (var i = 0; i < list.length; i++) {
+      if (list[i] && list[i].isConnected !== false) paint(list[i]);
+    }
+  }
+  function enqueue(el) {
+    if (!el || el.nodeType !== 1) return;
+    if (queue.indexOf(el) >= 0) return;
+    queue.push(el);
+    if (!scheduled) {
+      scheduled = true;
+      (window.requestAnimationFrame || window.setTimeout)(flush, 16);
+    }
+  }
+  function enqueueTree(node) {
+    if (!node || node.nodeType !== 1) return;
+    enqueue(node);
+    var all = node.querySelectorAll ? node.querySelectorAll("*") : [];
+    for (var i = 0; i < all.length; i++) enqueue(all[i]);
+  }
+  function paintAll() {
+    var root = document.getElementById("root");
+    if (root) paintTree(root);
+    var body = document.body;
+    if (body) {
+      var kids = body.children;
+      for (var i = 0; i < kids.length; i++) {
+        if (kids[i].id !== "root") paintTree(kids[i]);
+      }
+    }
+  }
+
+  var observer = null;
+  function startObserver() {
+    if (observer || !window.MutationObserver) return;
+    var root = document.getElementById("root");
+    observer = new MutationObserver(function (muts) {
+      for (var i = 0; i < muts.length; i++) {
+        var m = muts[i];
+        if (m.type === "childList") {
+          for (var j = 0; j < m.addedNodes.length; j++) enqueueTree(m.addedNodes[j]);
+        } else if (m.type === "attributes" && m.target && m.target.nodeType === 1) {
+          enqueue(m.target);
+        }
+      }
+    });
+    observer.observe(root || document.body, {
+      subtree: true, childList: true, attributes: true,
+      attributeFilter: ["style", "class"]
+    });
+  }
+
+  /* ---------------- state & sinkronisasi ---------------- */
+  function notify() {
+    var payload = getState();
+    listeners.slice().forEach(function (fn) {
+      try { fn(payload); } catch (e) {}
+    });
+  }
+
+  function apply() {
+    var id = resolveSkin(state.cfg);
+    state.resolved = id;
+    var html = document.documentElement;
+    var dark = themeMeta(id).tone === "dark";
+    if (html.getAttribute("data-skin") !== id) html.setAttribute("data-skin", id);
+    html.setAttribute("data-tone", dark ? "dark" : "light");
+    html.style.colorScheme = dark ? "dark" : "light";
+    if (id === "custom") applyCustomVars();
+    paintAll();
+    notify();
+  }
+
+  function getState() {
+    return {
+      cfg: { skin: state.cfg.skin, mode: state.cfg.mode },
+      custom: normalizeCustom(state.cfg.custom),
+      resolved: state.resolved,
+      theme: themeMeta(state.resolved),
+      today: skinForDay(wibDate(0)),
+      tomorrow: skinForDay(wibDate(1)),
+      theming: state.resolved !== "default"
+    };
+  }
+
+  function persist() {
+    writeLocal(state.cfg);
+    if (dbRef) {
+      try { dbRef.set(state.cfg).catch(function () {}); } catch (e) {}
+    }
+  }
+
+  function update(patch) {
+    state.cfg = normalizeCfg(Object.assign({}, state.cfg, patch || {}));
+    apply();
+    persist();
+  }
+
+  var customTimer = null;
+  function updateCustom(patch) {
+    state.cfg.custom = normalizeCustom(Object.assign({}, state.cfg.custom, patch || {}));
+    state.cfg.skin = "custom";
+    state.cfg.mode = "fixed";
+    apply();
+    writeLocal(state.cfg);
+    if (customTimer) clearTimeout(customTimer);
+    customTimer = setTimeout(function () {
+      if (dbRef) { try { dbRef.set(state.cfg).catch(function () {}); } catch (e) {} }
+    }, 700);
+  }
+
+  function subscribe(fn) {
+    if (typeof fn !== "function") return function () {};
+    listeners.push(fn);
+    return function () {
+      var i = listeners.indexOf(fn);
+      if (i >= 0) listeners.splice(i, 1);
+    };
+  }
+
+  function currentPath() {
+    if (!pathFn) return "";
+    try { return String(pathFn() || ""); } catch (e) { return ""; }
+  }
+
+  function refresh() {
+    var p = currentPath();
+    if (!p) return;
+    if (dbRef && p === dbPath) return;
+    if (dbRef) { try { dbRef.off(); } catch (e) {} dbRef = null; }
+    dbPath = p;
+    if (!db) return;
+    dbRef = db.ref(p);
+    dbRef.on("value", function (snap) {
+      var raw = snap && snap.val();
+      if (raw && typeof raw === "object") {
+        state.cfg = normalizeCfg(raw);
+        writeLocal(state.cfg);
+        apply();
+      }
+    }, function () {});
+  }
+
+  function connect(database, pathOrFn, key) {
+    db = database;
+    pathFn = typeof pathOrFn === "function" ? pathOrFn : function () { return pathOrFn; };
+    if (key) {
+      var cached = readLocal();
+      storageKey = key;
+      var mine = readLocal();
+      state.cfg = mine || cached || normalizeCfg(DEFAULT_CFG);
+    }
+    apply();
+    refresh();
+  }
+
+  /* ---------------- init ---------------- */
+  var initial = readLocal();
+  if (initial) state.cfg = initial;
+  state.resolved = resolveSkin(state.cfg);
+
+  function boot() {
+    var dark = themeMeta(state.resolved).tone === "dark";
+    document.documentElement.setAttribute("data-skin", state.resolved);
+    document.documentElement.setAttribute("data-tone", dark ? "dark" : "light");
+    document.documentElement.style.colorScheme = dark ? "dark" : "light";
+    startObserver();
+    paintAll();
+    setTimeout(paintAll, 120);
+    setTimeout(paintAll, 600);
+  }
+  if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", boot);
+  else boot();
+
+  /* tema acak harian: cek pergantian tanggal */
+  setInterval(function () {
+    if (resolveSkin(state.cfg) !== state.resolved) apply();
+  }, 60000);
+
+  window.SkinEngine = {
+    THEMES: THEMES,
+    POOL: DAILY_POOL,
+    PRESETS: PRESETS,
+    DEFAULT_CUSTOM: DEFAULT_CUSTOM,
+    updateCustom: updateCustom,
+    getState: getState,
+    resolve: function () { return resolveSkin(state.cfg); },
+    update: update,
+    apply: apply,
+    subscribe: subscribe,
+    connect: connect,
+    refresh: refresh,
+    repaint: paintAll
+  };
+})();
+
+</script>
+
   <script src="https://unpkg.com/react@18.3.1/umd/react.production.min.js"></script>
   <script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.production.min.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
@@ -4515,9 +6566,225 @@ genderListModal && h("div", {
   ])
 ]),
 
-h(Toast, { msg: toastMsg, visible: toastVisible })
+h(ThemeLauncher, { isAdmin }),
+    h(Toast, { msg: toastMsg, visible: toastVisible })
   ]);
 }
+
+/* ===================== PEMILIH TEMA + ATUR SENDIRI (KHUSUS ADMIN) ===================== */
+function ThemeLauncher({ isAdmin }) {
+  const [open, setOpen] = useState(false);
+  const [info, setInfo] = useState(() => SkinEngine.getState());
+  const [q, setQ] = useState("");
+
+  useEffect(() => SkinEngine.subscribe(setInfo), []);
+
+  if (!isAdmin) return null;
+
+  const cfg = info.cfg;
+  const cu = info.custom || SkinEngine.DEFAULT_CUSTOM;
+  const isDaily = cfg.mode === "daily";
+  const isCustom = cfg.skin === "custom";
+  const byId = id => SkinEngine.THEMES.filter(t => t.id === id)[0] || SkinEngine.THEMES[0];
+  const todayTheme = byId(info.today);
+  const tomorrowTheme = byId(info.tomorrow);
+  const activeTheme = byId(cfg.skin);
+  const needle = q.trim().toLowerCase();
+  const setCu = patch => SkinEngine.updateCustom(patch);
+
+  const card = t => {
+    const active = t.id === cfg.skin && !isDaily;
+    const isToday = isDaily && t.id === info.today;
+    return h("button", {
+      key: t.id,
+      className: "sk-th" + (active ? " active" : ""),
+      onClick: () => SkinEngine.update({ skin: t.id, mode: "fixed" }),
+      title: t.name
+    }, [
+      h("span", { key: "s", className: "sk-th-swatch", style: { background: t.preview } }),
+      h("span", { key: "m", className: "sk-th-meta" }, [
+        h("span", { key: "n", className: "sk-th-name" }, t.name),
+        h("span", { key: "d", className: "sk-th-desc" }, isToday ? "hari ini" : t.desc)
+      ]),
+      active && h("span", { key: "c", className: "sk-th-check" }, "✓"),
+      !active && isToday && h("span", { key: "t", className: "sk-th-check" }, "★")
+    ]);
+  };
+
+  const group = (label, items) => {
+    const shown = needle ? items.filter(t => (t.name + " " + t.desc).toLowerCase().indexOf(needle) >= 0) : items;
+    if (!shown.length) return null;
+    return h("div", { key: label }, [
+      h("div", { key: "l", className: "sk-admin-label", style: { marginTop: 12 } }, label + " · " + items.length),
+      h("div", { key: "g", className: "sk-admin-grid" }, shown.map(card))
+    ]);
+  };
+
+  /* ---------- kontrol atur sendiri ---------- */
+  const colorRow = (label, key, value, k) => h("div", { key: "c-" + k, className: "sk-ctl-row" }, [
+    h("span", { key: "l", className: "sk-ctl-label" }, label),
+    h("span", { key: "w", className: "sk-ctl-colors" }, [
+      h("input", {
+        key: "i", type: "color", className: "sk-color", value: value,
+        onChange: e => setCu({ [key]: e.target.value })
+      }),
+      h("span", { key: "h", className: "sk-hex" }, String(value || "").toUpperCase())
+    ])
+  ]);
+
+  const selectRow = (label, key, value, opts, k) => h("div", { key: "s-" + k, className: "sk-ctl" }, [
+    h("span", { key: "l", className: "sk-ctl-label" }, label),
+    h("select", {
+      key: "i", className: "sk-select", value: value,
+      onChange: e => setCu({ [key]: e.target.value })
+    }, opts.map(o => h("option", { key: o[0], value: o[0] }, o[1])))
+  ]);
+
+  const rangeRow = (label, key, value, min, max, step, suffix, k) => h("div", { key: "r-" + k, className: "sk-ctl" }, [
+    h("div", { key: "h", className: "sk-ctl-row" }, [
+      h("span", { key: "l", className: "sk-ctl-label" }, label),
+      h("span", { key: "v", className: "sk-ctl-val" }, value + (suffix || ""))
+    ]),
+    h("input", {
+      key: "i", type: "range", className: "sk-range", min: min, max: max, step: step, value: value,
+      onChange: e => setCu({ [key]: Number(e.target.value) })
+    })
+  ]);
+
+  const toggleRow = (label, key, value, k) => h("label", { key: "t-" + k, className: "sk-ctl-row sk-ctl-toggle" }, [
+    h("span", { key: "l", className: "sk-ctl-label" }, label),
+    h("input", {
+      key: "i", type: "checkbox", checked: !!value,
+      onChange: e => setCu({ [key]: e.target.checked })
+    })
+  ]);
+
+  const settings = isCustom && h("div", { key: "custom", className: "sk-settings" }, [
+    h("div", { key: "l", className: "sk-admin-label" }, "PRESET CEPAT"),
+    h("div", { key: "p", className: "sk-presets" }, SkinEngine.PRESETS.map(p =>
+      h("button", { key: p.id, className: "sk-preset", onClick: () => setCu(p.values) }, p.name)
+    )),
+
+    h("div", { key: "l2", className: "sk-admin-label", style: { marginTop: 14 } }, "LATAR HALAMAN"),
+    selectRow("Gaya latar", "bgStyle", cu.bgStyle, [
+      ["solid", "Warna rata"], ["gradient", "Gradien"], ["grid", "Garis grid"], ["dots", "Titik-titik"], ["mesh", "Cahaya mesh"]
+    ], "bgStyle"),
+    colorRow("Warna latar", "bg", cu.bg, "bg"),
+    colorRow("Warna kedua", "bg2", cu.bg2, "bg2"),
+
+    h("div", { key: "l3", className: "sk-admin-label", style: { marginTop: 14 } }, "KARTU & GARIS"),
+    colorRow("Warna kartu", "surface", cu.surface, "surface"),
+    rangeRow("Transparansi kartu", "surfaceAlpha", Math.round((cu.surfaceAlpha || 1) * 100), 35, 100, 1, "%", "surfaceAlpha"),
+    colorRow("Warna garis tepi", "border", cu.border, "border"),
+    rangeRow("Tebal garis tepi", "borderWidth", cu.borderWidth, 0, 6, 1, "px", "borderWidth"),
+    rangeRow("Sudut membulat", "radius", cu.radius, 0, 44, 1, "px", "radius"),
+    selectRow("Jenis bayangan", "shadow", cu.shadow, [
+      ["none", "Tanpa bayangan"], ["soft", "Lembut"], ["strong", "Tebal & dalam"],
+      ["hard", "Kotak keras (lego)"], ["glow", "Menyala (neon)"], ["float", "3D timbul"]
+    ], "shadow"),
+    toggleRow("Efek kaca (blur)", "glass", cu.glass, "glass"),
+
+    h("div", { key: "l4", className: "sk-admin-label", style: { marginTop: 14 } }, "TEKS"),
+    colorRow("Warna teks", "text", cu.text, "text"),
+    colorRow("Teks sekunder", "textDim", cu.textDim, "textDim"),
+    selectRow("Jenis huruf", "font", cu.font, [
+      ["system", "Biasa (system)"], ["rounded", "Membulat"], ["serif", "Serif"],
+      ["mono", "Monospace"], ["narrow", "Ramping"]
+    ], "font"),
+    rangeRow("Ukuran tampilan", "zoom", cu.zoom, 85, 115, 1, "%", "zoom"),
+
+    h("div", { key: "l5", className: "sk-admin-label", style: { marginTop: 14 } }, "TOMBOL & AKSEN"),
+    colorRow("Warna aksen", "accent", cu.accent, "accent"),
+    colorRow("Teks di aksen", "accentText", cu.accentText, "accentText"),
+    selectRow("Warna tombol", "buttonStyle", cu.buttonStyle, [
+      ["auto", "Warna asli aplikasi (HADIR hijau, dll)"], ["accent", "Semua tombol warna aksen"]
+    ], "buttonStyle"),
+
+    h("button", {
+      key: "reset",
+      className: "sk-preset sk-preset-reset",
+      onClick: () => setCu(SkinEngine.DEFAULT_CUSTOM)
+    }, "↺ Reset ke pengaturan awal")
+  ]);
+
+  const lights = SkinEngine.THEMES.filter(t => t.tone !== "dark");
+  const darks = SkinEngine.THEMES.filter(t => t.tone === "dark");
+
+  return h("div", null, [
+    h("button", {
+      key: "fab",
+      className: "sk-admin-fab",
+      onClick: () => setOpen(o => !o),
+      title: "Pilih tema tampilan",
+      "aria-label": "Pilih tema tampilan"
+    }, open ? "✕" : "🎨"),
+
+    open && h("div", { key: "panel", className: "sk-admin-panel" }, [
+      h("div", { key: "head", className: "sk-admin-head" }, [
+        h("div", null, [
+          h("div", { className: "sk-admin-title" }, "🎨 Tema Tampilan"),
+          h("div", { className: "sk-admin-sub" }, (SkinEngine.THEMES.length) + " tema · pilihan admin langsung diikuti semua siswa")
+        ]),
+        h("button", { className: "sk-admin-x", onClick: () => setOpen(false), title: "Tutup" }, "✕")
+      ]),
+
+      h("input", {
+        key: "search",
+        type: "text",
+        value: q,
+        onChange: e => setQ(e.target.value),
+        placeholder: "Cari tema...",
+        className: "sk-admin-search"
+      }),
+
+      group("TEMA TERANG", lights),
+      group("TEMA GELAP", darks),
+
+      h("div", { key: "mode", className: "sk-admin-sec" }, [
+        h("div", { className: "sk-admin-label" }, "MODE TEMA"),
+        h("div", { className: "sk-admin-modes" }, [
+          h("button", {
+            className: "sk-mode" + (!isDaily ? " active" : ""),
+            onClick: () => SkinEngine.update({ mode: "fixed" })
+          }, "📌 Manual"),
+          h("button", {
+            className: "sk-mode" + (isDaily ? " active" : ""),
+            onClick: () => SkinEngine.update({ mode: "daily" })
+          }, "🎲 Acak harian")
+        ])
+      ]),
+
+      settings,
+
+      h("div", { key: "note", className: "sk-admin-note" },
+        isDaily
+          ? [
+              "Tema otomatis berganti tiap hari dari tanggal (WIB), jadi semua HP menampilkan tema yang sama.",
+              h("br", { key: "b1" }),
+              h("br", { key: "b2" }),
+              "Hari ini: ",
+              h("b", { key: "t" }, todayTheme.name),
+              h("br", { key: "b3" }),
+              "Besok: ",
+              h("b", { key: "tm" }, tomorrowTheme.name)
+            ]
+          : isCustom
+            ? [
+                "Mode ", h("b", { key: "c" }, "Custom Bebas"), " aktif. Semua warna, bentuk dan bayangan di bawah ini ",
+                "langsung tersimpan dan dipakai tampilan siswa."
+              ]
+            : [
+                "Tema aktif: ",
+                h("b", { key: "t" }, activeTheme.name),
+                ". Tampilan siswa mengikuti otomatis begitu tersimpan."
+              ]
+      )
+    ])
+  ]);
+}
+
+/* ===== KONEKSI TEMA: admin menyimpan, siswa mengikuti ===== */
+SkinEngine.connect(db, () => FB_ROOT + "/meta/ui_theme", "skin_absensi_v1");
 
 ReactDOM.createRoot(document.getElementById("root")).render(h(AbsensiApp));
 </script>
